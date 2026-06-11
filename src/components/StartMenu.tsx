@@ -1,4 +1,5 @@
-import { IconTerminal, IconFolder, IconDocument, IconInfo } from "./Icons";
+import { IconTerminal, IconFolder, IconDocument, IconInfo, IconWinamp } from "./Icons";
+import { WINAMP_CONTENT } from "../content";
 
 interface StartMenuProps {
   visible: boolean;
@@ -14,6 +15,8 @@ const MENU_ITEMS = [
   { id: "projects", label: "Projects", icon: IconFolder, role: "projects" as const },
   { divider: true },
   { id: "skills", label: "Skills", icon: IconTerminal, role: "skills" as const },
+  { divider: true },
+  { id: "winamp", label: "Winamp", icon: IconWinamp, role: "winamp" as const },
   { id: "cv", label: "CV.pdf", icon: IconDocument, role: "cv" as const },
 ];
 
@@ -31,6 +34,7 @@ function StartMenu({
     about: aboutContent,
     projects: projectsContent,
     skills: skillsContent,
+    winamp: null, // handled separately via import
   };
 
   return (
@@ -58,6 +62,8 @@ function StartMenu({
                 onClick={() => {
                   if (item.role === "cv") {
                     window.open("/cv.pdf", "_blank");
+                  } else if (item.role === "winamp") {
+                    onOpenWindow(item.id!, "Winamp 2.91", item.id!, WINAMP_CONTENT);
                   } else {
                     const titles: Record<string, string> = {
                       about: "About Me.txt - Notepad",

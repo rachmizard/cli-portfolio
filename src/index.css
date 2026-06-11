@@ -279,6 +279,56 @@ body {
   background: #e0ddd0;
 }
 
+/* ── Winamp ── */
+.wa-titlebar-small {
+  font-family: var(--font-body);
+}
+.wa-btn {
+  width: 23px;
+  height: 18px;
+  background: linear-gradient(180deg, #4a4a6e 0%, #2a2a4e 40%, #2a2a4e 60%, #1a1a3e 100%);
+  border: 1px solid #5a5a7e;
+  color: #a0a0c0;
+  font-size: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-family: Tahoma, sans-serif;
+}
+.wa-btn:active {
+  background: linear-gradient(180deg, #1a1a3e 0%, #2a2a4e 100%);
+  border-color: #3a3a5e;
+}
+.wa-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.wa-btn-play {
+  background: linear-gradient(180deg, #5a8a3e 0%, #3a6a2e 40%, #2a5a1e 60%, #1a4a0e 100%);
+  border-color: #6a9a5e;
+}
+.wa-toggle-on {
+  color: #20ff60;
+  text-shadow: 0 0 4px #20ff60;
+}
+.wa-pl-btn {
+  height: 18px;
+  padding: 0 8px;
+  background: linear-gradient(180deg, #4a4a6e 0%, #2a2a4e 50%, #1a1a3e 100%);
+  border: 1px solid #5a5a7e;
+  color: #a0a0c0;
+  font-size: 7px;
+  cursor: pointer;
+  font-family: Tahoma, sans-serif;
+}
+.wa-pl-btn:active {
+  background: linear-gradient(180deg, #1a1a3e 0%, #2a2a4e 100%);
+}
+.wa-scrollbar::-webkit-scrollbar { width: 8px; }
+.wa-scrollbar::-webkit-scrollbar-track { background: #0a0a12; }
+.wa-scrollbar::-webkit-scrollbar-thumb { background: #3a3a5e; border: 1px solid #5a5a7e; }
+
 /* ── Mobile Responsive ── */
 @media (max-width: 768px) {
   html, body, #root {

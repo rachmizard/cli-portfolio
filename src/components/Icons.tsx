@@ -65,3 +65,11 @@ export const IconInfo = () => (
     <circle cx="16" cy="18" r="5" fill="none" stroke="#0046B8" strokeWidth="1" />
   </svg>
 );
+
+export const IconWinamp = () => (
+  <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+    {/* Bolt icon — classic Winamp lightning bolt */}
+    <rect x="2" y="2" width="28" height="28" rx="3" fill="#1a1a2e" stroke="#5a5a7e" strokeWidth="1" />
+    <polygon points="18,4 8,16 14,16 12,28 24,14 17,14 20,4" fill="#20ff60" stroke="#0a0" strokeWidth="0.5" />
+  </svg>
+);

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import FileExplorer from "./components/FileExplorer";
+import Winamp from "./components/Winamp";
 
 export const WELCOME_CONTENT: ReactNode = (
   <div className="p-4 space-y-4 font-mono text-[13px] leading-[18px]">
@@ -25,6 +26,8 @@ export const WELCOME_CONTENT: ReactNode = (
 );
 
 export const PROJECTS_CONTENT: ReactNode = <FileExplorer />;
+
+export const WINAMP_CONTENT: ReactNode = <Winamp />;
 
 export const ABOUT_CONTENT: ReactNode = (
   <div className="p-4 font-mono text-[13px] leading-[18px] space-y-3">

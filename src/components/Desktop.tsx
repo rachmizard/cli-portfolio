@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, type ReactNode, type MouseEvent as ReactMouseEvent } from "react";
 import Window from "./Window";
-import { WELCOME_CONTENT, PROJECTS_CONTENT, ABOUT_CONTENT } from "../content";
-import { IconDocument, IconFolder, IconTerminal, IconPDF } from "./Icons";
+import { WELCOME_CONTENT, PROJECTS_CONTENT, ABOUT_CONTENT, WINAMP_CONTENT } from "../content";
+import { IconDocument, IconFolder, IconTerminal, IconPDF, IconWinamp } from "./Icons";
 import type { AppWindow } from "../types";
 
 interface DesktopIcon {
@@ -33,6 +33,7 @@ const DESKTOP_ICONS: DesktopIcon[] = [
   { id: "projects", title: "Projects", Icon: IconFolder, content: PROJECTS_CONTENT, windowTitle: "Projects - File Explorer" },
   { id: "skills", title: "Skills.exe", Icon: IconTerminal, content: WELCOME_CONTENT, windowTitle: "Skills.exe - Command Prompt" },
   { id: "cv", title: "CV.pdf", Icon: IconPDF, content: null, windowTitle: "" },
+  { id: "winamp", title: "Winamp", Icon: IconWinamp, content: null, windowTitle: "Winamp 2.91" },
 ];
 
 function Desktop({
@@ -89,6 +90,8 @@ function Desktop({
               e.stopPropagation();
               if (icon.id === "cv") {
                 window.open("/cv.pdf", "_blank");
+              } else if (icon.id === "winamp") {
+                onOpenWindow(icon.id, icon.windowTitle, icon.id, WINAMP_CONTENT);
               } else {
                 onOpenWindow(icon.id, icon.windowTitle, icon.id, icon.content!);
               }
