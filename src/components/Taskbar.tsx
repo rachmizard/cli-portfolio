@@ -9,6 +9,18 @@ interface TaskbarProps {
   onToggleStartMenu: () => void;
 }
 
+/** Windows flag (simplified XP-era logo) */
+function WinFlag() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" className="inline-block -mt-0.5">
+      <rect x="1" y="1" width="6" height="6" rx="1" fill="#fff" opacity="0.9" />
+      <rect x="9" y="1" width="6" height="6" rx="1" fill="#fff" opacity="0.7" />
+      <rect x="1" y="9" width="6" height="6" rx="1" fill="#fff" opacity="0.7" />
+      <rect x="9" y="9" width="6" height="6" rx="1" fill="#fff" opacity="0.9" />
+    </svg>
+  );
+}
+
 function Taskbar({ windows, startMenuOpen, onFocusWindow, onToggleMinimize, onToggleStartMenu }: TaskbarProps) {
   const [time, setTime] = useState("");
 
@@ -22,7 +34,7 @@ function Taskbar({ windows, startMenuOpen, onFocusWindow, onToggleMinimize, onTo
       );
     };
     update();
-    const interval = setInterval(update, 1000);
+    const interval = setInterval(update, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -42,24 +54,25 @@ function Taskbar({ windows, startMenuOpen, onFocusWindow, onToggleMinimize, onTo
   };
 
   return (
-    <div className="taskbar h-[30px] flex items-center px-1 gap-0.5 z-50 text-[12px]">
+    <div className="taskbar h-[28px] flex items-center px-0.5 z-50">
       {/* Start Button */}
       <button
         onClick={onToggleStartMenu}
-        className={`px-3 py-0.5 rounded-bl-xl rounded-tl-xl flex items-center gap-1 font-bold transition-all text-[13px] ${
-          startMenuOpen
-            ? "bevel-in bg-surface-container-lowest text-on-surface"
-            : "bevel-out bg-secondary-container hover:brightness-110 text-on-secondary-container rounded-r-xl"
+        className={`btn-start bevel-out-thin px-3 py-0.5 flex items-center gap-1 ${
+          startMenuOpen ? "pressed" : ""
         }`}
       >
-        <span className="text-[13px]">🪟</span>
-        <span>Start</span>
+        <WinFlag />
+        <span>start</span>
       </button>
 
-      <div className="h-6 w-[1px] bg-outline-variant/30 mx-0.5" />
+      <div className="w-[3px]" />
+
+      {/* Quick Launch area (optional) */}
+      <div className="flex items-center gap-0.5 shrink-0" />
 
       {/* Window Buttons */}
-      <div className="flex-1 flex gap-0.5 overflow-x-auto">
+      <div className="flex-1 flex gap-0.5 overflow-x-auto px-1">
         {windows.map((w) => {
           const visible = windows.filter((x) => !x.minimized);
           const topWindow = visible.sort((a, b) => b.zIndex - a.zIndex)[0];
@@ -69,25 +82,21 @@ function Taskbar({ windows, startMenuOpen, onFocusWindow, onToggleMinimize, onTo
             <button
               key={w.id}
               onClick={() => handleTaskClick(w.id, w.minimized)}
-              className={`flex items-center gap-1 px-2 py-0.5 text-[11px] max-w-[160px] truncate transition-colors ${
-                isActive
-                  ? "bevel-in bg-surface-container-lowest"
-                  : "bevel-out bg-surface-container-low"
+              className={`task-btn bevel-out-thin max-w-[170px] truncate flex items-center gap-1 ${
+                isActive ? "active" : ""
               }`}
-              style={{ fontFamily: "'Work Sans', sans-serif" }}
             >
-              <span className="text-on-surface shrink-0 text-[14px]">🪟</span>
-              <span className="truncate text-on-surface">{w.title}</span>
+              <span className="text-[13px] shrink-0">
+                <WinFlag />
+              </span>
+              <span className="truncate">{w.title}</span>
             </button>
           );
         })}
       </div>
 
-      <div className="h-6 w-[1px] bg-outline-variant/30 mx-0.5" />
-
-      {/* System tray */}
-      <div className="bevel-in bg-surface-container-lowest px-1.5 py-0.5 text-[11px] text-on-surface shrink-0 flex items-center gap-1"
-        style={{ fontFamily: "'Work Sans', sans-serif" }}>
+      {/* System Tray */}
+      <div className="tray bevel-in flex items-center gap-1">
         {time}
       </div>
     </div>

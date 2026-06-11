@@ -44,6 +44,7 @@ function Desktop({
   onMaximizeWindow,
   onStartMenuOpen,
 }: DesktopProps) {
+  const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
   const [contextMenu, setContextMenu] = useState<ContextMenu>({ x: 0, y: 0, visible: false });
 
   const handleContextMenu = useCallback((e: ReactMouseEvent) => {
@@ -63,32 +64,41 @@ function Desktop({
     }
   }, [contextMenu.visible, hideContextMenu]);
 
+  const handleDesktopClick = () => {
+    setSelectedIcon(null);
+    onFocusWindow("");
+    hideContextMenu();
+  };
+
   return (
     <div
-      className="flex-1 relative desktop"
+      className="flex-1 relative desktop select-none"
       onContextMenu={handleContextMenu}
-      onClick={() => onFocusWindow("")}
+      onClick={handleDesktopClick}
     >
       {/* Desktop Icons */}
-      <div className="absolute top-0 left-0 p-4 grid grid-cols-1 gap-6 w-24 z-0">
+      <div className="absolute top-0 left-0 p-3 grid grid-cols-1 gap-1 w-24 z-0">
         {DESKTOP_ICONS.map((icon) => (
           <button
             key={icon.id}
-            onDoubleClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedIcon(icon.id);
+            }}
+            onDoubleClick={(e) => {
+              e.stopPropagation();
               if (icon.id === "cv") {
                 window.open("/cv.pdf", "_blank");
               } else {
                 onOpenWindow(icon.id, icon.windowTitle, icon.id, icon.content!);
               }
             }}
-            className="flex flex-col items-center group focus:outline-none cursor-pointer"
+            className={`desktop-icon ${selectedIcon === icon.id ? "selected" : ""}`}
           >
-            <div className="w-10 h-10 mb-1 flex items-center justify-center">
+            <div className="w-10 h-10 flex items-center justify-center pointer-events-none">
               <icon.Icon />
             </div>
-            <span className="text-white font-mono text-[11px] text-center px-1 bg-primary/80 leading-tight">
-              {icon.title}
-            </span>
+            <span className="desktop-icon-text">{icon.title}</span>
           </button>
         ))}
       </div>
@@ -115,28 +125,34 @@ function Desktop({
       {/* Context Menu */}
       {contextMenu.visible && (
         <div
-          className="fixed z-[9999] bevel-out bg-surface-container-lowest py-1 min-w-[180px] shadow-lg"
+          className="fixed z-[9999] bevel-out-thin bg-surface-container-lowest py-0.5 min-w-[180px] font-body text-[11px]"
           style={{ left: contextMenu.x, top: contextMenu.y }}
+          onClick={(e) => e.stopPropagation()}
         >
           {[
-            { label: "Arrange Icons By", sub: ["Name", "Type", "Size", "Date"] },
+            { label: "Arrange Icons By", disabled: true },
             { label: "Refresh", action: () => window.location.reload() },
             { divider: true },
-            { label: "New", sub: ["Folder", "Text Document"] },
+            { label: "Paste", disabled: true },
+            { label: "Paste Shortcut", disabled: true },
             { divider: true },
-            { label: "Properties", action: () => onStartMenuOpen() },
+            { label: "New", disabled: true },
+            { divider: true },
+            { label: "Properties", action: onStartMenuOpen },
           ].map((item, i) => {
             if ("divider" in item) {
-              return <div key={i} className="border-t border-outline-variant my-1" />;
+              return <div key={i} className="border-t border-outline-variant my-0.5" />;
             }
             return (
               <button
                 key={i}
-                className="w-full text-left px-6 py-1 text-[13px] text-on-surface hover:bg-primary hover:text-on-primary font-body flex items-center justify-between"
+                disabled={item.disabled}
+                className={`w-full text-left px-6 py-1 hover:bg-primary hover:text-on-primary ${
+                  item.disabled ? "text-outline" : "text-on-surface"
+                }`}
                 onClick={item.action}
               >
                 {item.label}
-                {item.sub && <span className="text-[10px] text-outline">▶</span>}
               </button>
             );
           })}

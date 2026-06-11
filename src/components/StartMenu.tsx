@@ -35,30 +35,26 @@ function StartMenu({
 
   return (
     <>
-      {/* Backdrop */}
       <div className="fixed inset-0 z-[9998]" onClick={onClose} />
-
-      {/* Menu */}
-      <div className="fixed bottom-10 left-0 z-[9999] bevel-out bg-surface-container-lowest w-[220px] shadow-xl font-body">
-        {/* User banner */}
-        <div className="bg-primary text-on-primary px-4 py-3 flex items-center gap-2">
-          <div className="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center bevel-in">
-            <span className="text-primary font-bold text-lg">JD</span>
-          </div>
-          <span className="font-bold text-[14px]">John Doe</span>
+      <div className="fixed bottom-[28px] left-0 z-[9999] bevel-out-thin bg-surface-container-lowest w-[380px] shadow-xl flex font-body text-[11px]">
+        {/* Left side - user banner (vertical) */}
+        <div className="start-menu-user w-[28px] flex items-end justify-center pb-2 shrink-0">
+          <span className="[writing-mode:vertical-rl] rotate-180 text-[18px] tracking-[3px]">
+            John Doe
+          </span>
         </div>
 
         {/* Menu items */}
-        <div className="py-1">
-          {MENU_ITEMS.map((item, i) => {
-            if ("divider" in item && item.divider) {
-              return <div key={i} className="border-t border-outline-variant my-1" />;
+        <div className="flex-1 py-1">
+          {MENU_ITEMS.map((item: any, i: number) => {
+            if (item.divider) {
+              return <div key={i} className="border-t border-outline-variant my-1 mx-2" />;
             }
-            const Icon = item.icon!;
+            const Icon = item.icon;
             return (
               <button
                 key={i}
-                className="w-full text-left px-4 py-2 text-[13px] text-on-surface hover:bg-primary hover:text-on-primary flex items-center gap-3 font-body"
+                className="start-menu-item w-full text-left flex items-center gap-3"
                 onClick={() => {
                   if (item.role === "cv") {
                     window.open("/cv.pdf", "_blank");
@@ -73,19 +69,24 @@ function StartMenu({
                   onClose();
                 }}
               >
-                <div className="w-6 h-6 flex items-center justify-center">
+                <div className="w-7 h-7 flex items-center justify-center">
                   <Icon />
                 </div>
-                {item.label}
+                <span>{item.label}</span>
               </button>
             );
           })}
-        </div>
 
-        {/* Bottom bar */}
-        <div className="bg-primary-container/20 px-4 py-1.5 flex items-center justify-end gap-2">
-          <span className="text-[10px] text-on-surface-variant">Log Off</span>
-          <span className="text-[10px] text-on-surface-variant">Turn Off</span>
+          <div className="border-t border-outline-variant my-1 mx-2" />
+
+          <div className="start-menu-footer flex justify-end gap-4 px-4 py-1">
+            <button className="hover:underline flex items-center gap-1">
+              <span>🔓</span> Log Off
+            </button>
+            <button className="hover:underline flex items-center gap-1">
+              <span>⏻</span> Turn Off
+            </button>
+          </div>
         </div>
       </div>
     </>
