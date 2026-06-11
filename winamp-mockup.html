@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Winamp Mockup — Rachmizard CLI Portfolio</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #2a2a2a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'MS Sans Serif', 'Segoe UI', Tahoma, sans-serif;
+    font-size: 11px;
+  }
+
+  .winamp-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.6));
+  }
+
+  /* ── Shared Winamp window chrome ── */
+  .winamp-window {
+    background: #1a1a2e;
+    border: 2px solid;
+    border-color: #5a5a6e #1a1a2e #1a1a2e #5a5a6e;
+    position: relative;
+  }
+
+  /* ── Main Player Window ── */
+  .main-window {
+    width: 275px;
+  }
+
+  .wa-titlebar {
+    background: linear-gradient(180deg, #3a3a5e 0%, #1a1a2e 100%);
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 3px;
+    border-bottom: 1px solid #0a0a1e;
+  }
+  .wa-title-text {
+    color: #a0a0c0;
+    font-size: 8px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
+  .wa-title-btns {
+    display: flex;
+    gap: 2px;
+  }
+  .wa-title-btn {
+    width: 9px;
+    height: 9px;
+    background: #3a3a5e;
+    border: 1px solid #5a5a7e;
+    color: #a0a0c0;
+    font-size: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  /* Display area */
+  .wa-display {
+    margin: 3px 3px 0 3px;
+    background: #0a0a12;
+    border: 1px solid #3a3a5e;
+    padding: 3px 4px;
+    position: relative;
+    height: 67px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .wa-track-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .wa-track-title {
+    color: #20ff60;
+    font-size: 9px;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 160px;
+  }
+  .wa-track-time {
+    color: #20ff60;
+    font-size: 8px;
+    font-family: 'Courier New', monospace;
+    min-width: 55px;
+    text-align: right;
+  }
+  .wa-bitrate {
+    color: #20ff60;
+    font-size: 7px;
+    font-family: 'Courier New', monospace;
+    display: flex;
+    gap: 8px;
+  }
+  /* Visualizer bars */
+  .wa-vis {
+    display: flex;
+    align-items: flex-end;
+    gap: 1px;
+    height: 24px;
+    margin-top: 1px;
+  }
+  .wa-vis-bar {
+    flex: 1;
+    background: #20ff60;
+    border-radius: 0;
+    animation: visPulse 0.8s ease-in-out infinite alternate;
+    opacity: 0.7;
+  }
+  .wa-vis-bar:nth-child(1)  { height: 60%; animation-delay: 0s; }
+  .wa-vis-bar:nth-child(2)  { height: 80%; animation-delay: 0.1s; }
+  .wa-vis-bar:nth-child(3)  { height: 40%; animation-delay: 0.2s; }
+  .wa-vis-bar:nth-child(4)  { height: 90%; animation-delay: 0.3s; }
+  .wa-vis-bar:nth-child(5)  { height: 55%; animation-delay: 0.4s; }
+  .wa-vis-bar:nth-child(6)  { height: 70%; animation-delay: 0.5s; }
+  .wa-vis-bar:nth-child(7)  { height: 35%; animation-delay: 0.6s; }
+  .wa-vis-bar:nth-child(8)  { height: 85%; animation-delay: 0.7s; }
+  .wa-vis-bar:nth-child(9)  { height: 50%; animation-delay: 0.15s; }
+  .wa-vis-bar:nth-child(10) { height: 75%; animation-delay: 0.25s; }
+  .wa-vis-bar:nth-child(11) { height: 45%; animation-delay: 0.35s; }
+  .wa-vis-bar:nth-child(12) { height: 65%; animation-delay: 0.45s; }
+  .wa-vis-bar:nth-child(13) { height: 30%; animation-delay: 0.55s; }
+  .wa-vis-bar:nth-child(14) { height: 95%; animation-delay: 0.65s; }
+  .wa-vis-bar:nth-child(15) { height: 55%; animation-delay: 0.75s; }
+  .wa-vis-bar:nth-child(16) { height: 70%; animation-delay: 0.05s; }
+  .wa-vis-bar:nth-child(17) { height: 40%; animation-delay: 0.18s; }
+  .wa-vis-bar:nth-child(18) { height: 80%; animation-delay: 0.28s; }
+  .wa-vis-bar:nth-child(19) { height: 60%; animation-delay: 0.38s; }
+
+  @keyframes visPulse {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+
+  /* Seek bar */
+  .wa-seek-area {
+    margin: 2px 3px;
+    height: 11px;
+    background: #1a1a2e;
+    border: 1px solid #3a3a5e;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 2px;
+  }
+  .wa-seek-track {
+    flex: 1;
+    height: 5px;
+    background: #2a2a3e;
+    position: relative;
+  }
+  .wa-seek-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 35%;
+    background: #20ff60;
+  }
+  .wa-seek-thumb {
+    position: absolute;
+    left: 35%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    background: #3a3a5e;
+    border: 1px solid #6a6a8e;
+  }
+
+  /* Buttons area */
+  .wa-controls {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 2px 3px 3px 3px;
+    background: #1a1a2e;
+  }
+  .wa-transport {
+    display: flex;
+    gap: 2px;
+    margin-right: 4px;
+  }
+  .wa-btn {
+    width: 23px;
+    height: 18px;
+    background: linear-gradient(180deg, #4a4a6e 0%, #2a2a4e 40%, #2a2a4e 60%, #1a1a3e 100%);
+    border: 1px solid #5a5a7e;
+    color: #a0a0c0;
+    font-size: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .wa-btn:active {
+    background: linear-gradient(180deg, #1a1a3e 0%, #2a2a4e 100%);
+    border-color: #3a3a5e;
+  }
+  .wa-btn-play {
+    background: linear-gradient(180deg, #5a8a3e 0%, #3a6a2e 40%, #2a5a1e 60%, #1a4a0e 100%);
+    border-color: #6a9a5e;
+  }
+  .wa-btn-shuf, .wa-btn-rep {
+    width: 28px;
+    font-size: 7px;
+    margin-left: 2px;
+  }
+  .wa-btn-shuf.active, .wa-btn-rep.active {
+    color: #20ff60;
+    text-shadow: 0 0 4px #20ff60;
+  }
+  .wa-btn-eject {
+    font-size: 6px;
+  }
+
+  /* Volume + Balance */
+  .wa-sliders {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+    align-items: center;
+  }
+  .wa-slider-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .wa-slider-label {
+    color: #20ff60;
+    font-size: 6px;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 1px;
+  }
+  .wa-vslider {
+    width: 12px;
+    height: 38px;
+    background: #0a0a12;
+    border: 1px solid #3a3a5e;
+    position: relative;
+  }
+  .wa-vslider-fill {
+    position: absolute;
+    bottom: 0;
+    left: 1px;
+    right: 1px;
+    height: 65%;
+    background: #20ff60;
+    opacity: 0.6;
+  }
+  .wa-vslider-thumb {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 65%;
+    height: 4px;
+    background: #3a3a5e;
+    border: 1px solid #6a6a8e;
+  }
+
+  /* ── Equalizer Window ── */
+  .eq-window {
+    width: 275px;
+    margin-top: -2px;
+  }
+  .eq-bands {
+    display: flex;
+    gap: 2px;
+    padding: 4px 6px;
+    align-items: flex-end;
+    height: 72px;
+  }
+  .eq-band {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    flex: 1;
+    height: 100%;
+    justify-content: flex-end;
+  }
+  .eq-slider {
+    width: 12px;
+    height: 48px;
+    background: #0a0a12;
+    border: 1px solid #3a3a5e;
+    position: relative;
+  }
+  .eq-slider-fill {
+    position: absolute;
+    bottom: 0;
+    left: 1px;
+    right: 1px;
+    background: #20ff60;
+    opacity: 0.4;
+  }
+  .eq-slider-thumb {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #3a3a5e;
+    border: 1px solid #6a6a8e;
+  }
+  .eq-label {
+    color: #20ff60;
+    font-size: 6px;
+    font-family: 'Courier New', monospace;
+  }
+  .eq-preset {
+    margin: 2px 6px 4px 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .eq-preset-btn {
+    height: 16px;
+    padding: 0 6px;
+    background: #2a2a4e;
+    border: 1px solid #5a5a7e;
+    color: #20ff60;
+    font-size: 7px;
+    cursor: pointer;
+  }
+  .eq-preset-label {
+    color: #20ff60;
+    font-size: 7px;
+  }
+
+  /* ── Playlist Window ── */
+  .pl-window {
+    width: 275px;
+    margin-top: -2px;
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+  }
+  .pl-list {
+    flex: 1;
+    overflow-y: auto;
+    background: #0a0a12;
+    margin: 2px 3px;
+    border: 1px solid #3a3a5e;
+    padding: 2px;
+    font-family: 'Courier New', monospace;
+    font-size: 8px;
+    color: #20ff60;
+  }
+  .pl-item {
+    padding: 1px 4px;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .pl-item.current {
+    background: #20ff60;
+    color: #0a0a12;
+  }
+  .pl-item:hover:not(.current) {
+    background: #1a3a1e;
+  }
+  .pl-buttons {
+    display: flex;
+    gap: 3px;
+    padding: 2px 3px 3px 3px;
+  }
+  .pl-btn {
+    height: 18px;
+    padding: 0 8px;
+    background: linear-gradient(180deg, #4a4a6e 0%, #2a2a4e 50%, #1a1a3e 100%);
+    border: 1px solid #5a5a7e;
+    color: #a0a0c0;
+    font-size: 7px;
+    cursor: pointer;
+  }
+  .pl-info {
+    color: #20ff60;
+    font-size: 8px;
+    text-align: right;
+    padding: 0 6px 2px 0;
+    font-family: 'Courier New', monospace;
+  }
+
+  /* Scrollbar styling */
+  .pl-list::-webkit-scrollbar { width: 8px; }
+  .pl-list::-webkit-scrollbar-track { background: #0a0a12; }
+  .pl-list::-webkit-scrollbar-thumb { background: #3a3a5e; border: 1px solid #5a5a7e; }
+
+  /* Monsterstereo / EQ labels */
+  .wa-mono-stereo {
+    display: flex;
+    gap: 12px;
+    margin: 2px 4px 0 4px;
+  }
+  .wa-mono-stereo span {
+    color: #20ff60;
+    font-size: 7px;
+    font-family: 'Courier New', monospace;
+    opacity: 0.4;
+  }
+  .wa-mono-stereo span.active {
+    opacity: 1;
+    text-shadow: 0 0 3px #20ff60;
+  }
+</style>
+</head>
+<body>
+
+<div class="winamp-container">
+
+  <!-- ═══ MAIN PLAYER ═══ -->
+  <div class="winamp-window main-window">
+    <div class="wa-titlebar">
+      <span class="wa-title-text">WINAMP 2.91</span>
+      <div class="wa-title-btns">
+        <button class="wa-title-btn">─</button>
+        <button class="wa-title-btn">□</button>
+        <button class="wa-title-btn" style="color:#ff4040">✕</button>
+      </div>
+    </div>
+
+    <!-- Display -->
+    <div class="wa-display">
+      <div class="wa-track-info">
+        <span class="wa-track-title">1. Daft Punk — Something About Us</span>
+        <span class="wa-track-time">1:24 / 3:52</span>
+      </div>
+      <div class="wa-bitrate">
+        <span>128 kbps</span>
+        <span>44 kHz</span>
+        <span class="wa-mono-stereo" style="margin:0;gap:6px;display:inline-flex">
+          <span>mono</span>
+          <span class="active">stereo</span>
+        </span>
+      </div>
+      <!-- Visualizer -->
+      <div class="wa-vis">
+        <div class="wa-vis-bar"></div><div class="wa-vis-bar"></div><div class="wa-vis-bar"></div>
+        <div class="wa-vis-bar"></div><div class="wa-vis-bar"></div><div class="wa-vis-bar"></div>
+        <div class="wa-vis-bar"></div><div class="wa-vis-bar"></div><div class="wa-vis-bar"></div>
+        <div class="wa-vis-bar"></div><div class="wa-vis-bar"></div><div class="wa-vis-bar"></div>
+        <div class="wa-vis-bar"></div><div class="wa-vis-bar"></div><div class="wa-vis-bar"></div>
+        <div class="wa-vis-bar"></div><div class="wa-vis-bar"></div><div class="wa-vis-bar"></div>
+        <div class="wa-vis-bar"></div>
+      </div>
+    </div>
+
+    <!-- Seek -->
+    <div class="wa-seek-area">
+      <div class="wa-seek-track">
+        <div class="wa-seek-fill"></div>
+        <div class="wa-seek-thumb"></div>
+      </div>
+    </div>
+
+    <!-- Transport Controls -->
+    <div class="wa-controls">
+      <div class="wa-transport">
+        <button class="wa-btn" title="Previous">⏮</button>
+        <button class="wa-btn wa-btn-play" title="Play">▶</button>
+        <button class="wa-btn" title="Pause">⏸</button>
+        <button class="wa-btn" title="Stop">⏹</button>
+        <button class="wa-btn" title="Next">⏭</button>
+        <button class="wa-btn wa-btn-eject" title="Eject">▲</button>
+      </div>
+      <button class="wa-btn wa-btn-shuf" title="Shuffle">SHF</button>
+      <button class="wa-btn wa-btn-rep active" title="Repeat">REP</button>
+
+      <div class="wa-sliders">
+        <div class="wa-slider-group">
+          <span class="wa-slider-label">VOL</span>
+          <div class="wa-vslider">
+            <div class="wa-vslider-fill"></div>
+            <div class="wa-vslider-thumb"></div>
+          </div>
+        </div>
+        <div class="wa-slider-group">
+          <span class="wa-slider-label">BAL</span>
+          <div class="wa-vslider">
+            <div class="wa-vslider-fill" style="height:50%"></div>
+            <div class="wa-vslider-thumb" style="bottom:50%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ EQUALIZER ═══ -->
+  <div class="winamp-window eq-window">
+    <div class="wa-titlebar">
+      <span class="wa-title-text">WINAMP EQUALIZER</span>
+      <div class="wa-title-btns">
+        <button class="wa-title-btn">─</button>
+        <button class="wa-title-btn">□</button>
+        <button class="wa-title-btn" style="color:#ff4040">✕</button>
+      </div>
+    </div>
+
+    <div class="eq-bands">
+      <div class="eq-band"><div class="eq-slider"><div class="eq-slider-fill" style="height:60%;top:0"></div><div class="eq-slider-thumb" style="top:40%"></div></div><span class="eq-label">60</span></div>
+      <div class="eq-band"><div class="eq-slider"><div class="eq-slider-fill" style="height:45%;top:0"></div><div class="eq-slider-thumb" style="top:55%"></div></div><span class="eq-label">170</span></div>
+      <div class="eq-band"><div class="eq-slider"><div class="eq-slider-fill" style="height:75%;top:0"></div><div class="eq-slider-thumb" style="top:25%"></div></div><span class="eq-label">310</span></div>
+      <div class="eq-band"><div class="eq-slider"><div class="eq-slider-fill" style="height:50%;top:0"></div><div class="eq-slider-thumb" style="top:50%"></div></div><span class="eq-label">600</span></div>
+      <div class="eq-band"><div class="eq-slider"><div class="eq-slider-fill" style="height:65%;top:0"></div><div class="eq-slider-thumb" style="top:35%"></div></div><span class="eq-label">1K</span></div>
+      <div class="eq-band"><div class="eq-slider"><div class="eq-slider-fill" style="height:55%;top:0"></div><div class="eq-slider-thumb" style="top:45%"></div></div><span class="eq-label">3K</span></div>
+      <div class="eq-band"><div class="eq-slider"><div class="eq-slider-fill" style="height:70%;top:0"></div><div class="eq-slider-thumb" style="top:30%"></div></div><span class="eq-label">6K</span></div>
+      <div class="eq-band"><div class="eq-slider"><div class="eq-slider-fill" style="height:48%;top:0"></div><div class="eq-slider-thumb" style="top:52%"></div></div><span class="eq-label">12K</span></div>
+      <div class="eq-band"><div class="eq-slider"><div class="eq-slider-fill" style="height:58%;top:0"></div><div class="eq-slider-thumb" style="top:42%"></div></div><span class="eq-label">14K</span></div>
+      <div class="eq-band"><div class="eq-slider"><div class="eq-slider-fill" style="height:40%;top:0"></div><div class="eq-slider-thumb" style="top:60%"></div></div><span class="eq-label">16K</span></div>
+    </div>
+    <div class="eq-preset">
+      <button class="eq-preset-btn">Presets</button>
+      <span class="eq-preset-label">Rock</span>
+    </div>
+  </div>
+
+  <!-- ═══ PLAYLIST ═══ -->
+  <div class="winamp-window pl-window">
+    <div class="wa-titlebar">
+      <span class="wa-title-text">WINAMP PLAYLIST</span>
+      <div class="wa-title-btns">
+        <button class="wa-title-btn">─</button>
+        <button class="wa-title-btn">□</button>
+        <button class="wa-title-btn" style="color:#ff4040">✕</button>
+      </div>
+    </div>
+    <div class="pl-list">
+      <div class="pl-item current"> 1. Daft Punk — Something About Us &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3:52</div>
+      <div class="pl-item"> 2. Tame Impala — The Less I Know The Better &nbsp;3:38</div>
+      <div class="pl-item"> 3. Mac DeMarco — Chamber of Reflection &nbsp;&nbsp;&nbsp;3:52</div>
+      <div class="pl-item"> 4. Gorillaz — On Melancholy Hill &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3:53</div>
+      <div class="pl-item"> 5. MGMT — Electric Feel &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3:49</div>
+      <div class="pl-item"> 6. The Strokes — Reptilia &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3:41</div>
+      <div class="pl-item"> 7. Arctic Monkeys — Do I Wanna Know? &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4:33</div>
+      <div class="pl-item"> 8. Tame Impala — Let It Happen &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7:47</div>
+    </div>
+    <div class="pl-info">8 tracks — 34:45 total</div>
+    <div class="pl-buttons">
+      <button class="pl-btn">+ Add</button>
+      <button class="pl-btn">– Rem</button>
+      <button class="pl-btn">Sel</button>
+      <button class="pl-btn">Misc</button>
+      <button class="pl-btn" style="margin-left:auto">List</button>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
