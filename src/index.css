@@ -93,15 +93,9 @@ body {
 
 /* ── Desktop ── */
 .desktop {
-  background: linear-gradient(
-    180deg,
-    #3a6bd5 0%,
-    #5b8def 20%,
-    #87b9ff 45%,
-    #a8d8a8 65%,
-    #7cb868 80%,
-    #4a8c3f 100%
-  );
+  background-image: url('/bliss.jpg');
+  background-size: cover;
+  background-position: center;
 }
 
 /* ── Taskbar ── */
