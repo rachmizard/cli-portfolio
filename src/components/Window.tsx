@@ -4,8 +4,10 @@ interface WindowProps {
   title: string;
   children: ReactNode;
   zIndex: number;
+  maximized: boolean;
   onFocus: () => void;
   onMinimize: () => void;
+  onMaximize: () => void;
   onClose: () => void;
 }
 
@@ -21,8 +23,9 @@ interface DragState {
   origY: number;
 }
 
-function Window({ title, children, zIndex, onFocus, onMinimize, onClose }: WindowProps) {
+function Window({ title, children, zIndex, maximized, onFocus, onMinimize, onMaximize, onClose }: WindowProps) {
   const [pos, setPos] = useState<Position>({ x: 80, y: 60 });
+  const [size, setSize] = useState<{ w: number; h: number }>({ w: 420, h: 320 });
   const [dragging, setDragging] = useState(false);
   const [dragRef] = useState<DragState>(() => ({ startX: 0, startY: 0, origX: 0, origY: 0 }));
 
@@ -35,6 +38,7 @@ function Window({ title, children, zIndex, onFocus, onMinimize, onClose }: Windo
 
   const handleMouseDown = useCallback(
     (e: MouseEvent) => {
+      if (maximized) return;
       onFocus();
       setDragging(true);
       dragRef.startX = e.clientX;
@@ -42,7 +46,7 @@ function Window({ title, children, zIndex, onFocus, onMinimize, onClose }: Windo
       dragRef.origX = pos.x;
       dragRef.origY = pos.y;
     },
-    [pos, onFocus, dragRef],
+    [pos, onFocus, dragRef, maximized],
   );
 
   useEffect(() => {
@@ -62,19 +66,30 @@ function Window({ title, children, zIndex, onFocus, onMinimize, onClose }: Windo
     };
   }, [dragging, dragRef]);
 
-  return (
-    <div
-      className="absolute window raised-bevel flex flex-col shadow-xl"
-      style={{
+  const winStyle = maximized
+    ? {
+        left: 0,
+        top: 0,
+        width: "100%",
+        height: "calc(100% - 40px)",
+        zIndex,
+      }
+    : {
         left: pos.x,
         top: pos.y,
-        width: 420,
-        minHeight: 300,
+        width: size.w,
+        minHeight: size.h,
         maxHeight: "70vh",
         zIndex,
-      }}
+      };
+
+  return (
+    <div
+      className={`absolute window flex flex-col shadow-xl ${maximized ? "" : "raised-bevel rounded-t-lg"}`}
+      style={winStyle as React.CSSProperties}
       onMouseDown={onFocus}
     >
+      {/* Title Bar */}
       <div
         className="title-bar flex items-center justify-between cursor-default select-none"
         onMouseDown={handleMouseDown}
@@ -87,7 +102,10 @@ function Window({ title, children, zIndex, onFocus, onMinimize, onClose }: Windo
           >
             _
           </button>
-          <button className="title-bar-buttons bevel-out flex items-center justify-center text-on-surface leading-none">
+          <button
+            onClick={onMaximize}
+            className="title-bar-buttons bevel-out flex items-center justify-center text-on-surface leading-none"
+          >
             □
           </button>
           <button
@@ -98,7 +116,9 @@ function Window({ title, children, zIndex, onFocus, onMinimize, onClose }: Windo
           </button>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto">{children}</div>
+
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto bg-surface-container-lowest">{children}</div>
     </div>
   );
 }

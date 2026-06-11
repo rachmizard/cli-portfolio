@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
-/* ── Legacy Desktop Design System (Windows XP Retro) ── */
+/* ── Windows XP Luna Design System ── */
 
 @theme {
   /* Colors */
-  --color-surface: #fdfae8;
-  --color-surface-dim: #dddaca;
-  --color-surface-bright: #fdfae8;
+  --color-surface: #ece9d8;
+  --color-surface-dim: #d4d0c8;
+  --color-surface-bright: #ffffff;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f7f4e3;
-  --color-surface-container: #f1eedd;
+  --color-surface-container-low: #f7f3e9;
+  --color-surface-container: #f1ede3;
   --color-surface-container-high: #ece9d8;
-  --color-surface-container-highest: #e6e3d2;
+  --color-surface-container-highest: #d4d0c8;
   --color-on-surface: #1c1c12;
   --color-on-surface-variant: #434654;
   --color-inverse-surface: #313126;
@@ -19,14 +19,14 @@
   --color-outline: #737686;
   --color-outline-variant: #c3c6d6;
   --color-surface-tint: #1355d2;
-  --color-primary: #0046b8;
+  --color-primary: #0054e3;
   --color-on-primary: #ffffff;
-  --color-primary-container: #245edb;
+  --color-primary-container: #3c6df0;
   --color-on-primary-container: #e0e5ff;
   --color-inverse-primary: #b3c5ff;
-  --color-secondary: #126d1e;
+  --color-secondary: #3c913d;
   --color-on-secondary: #ffffff;
-  --color-secondary-container: #9ef896;
+  --color-secondary-container: #69b86c;
   --color-on-secondary-container: #1b7424;
   --color-tertiary: #6e4600;
   --color-on-tertiary: #ffffff;
@@ -41,19 +41,6 @@
   --font-headline: "Work Sans", sans-serif;
   --font-body: "Work Sans", sans-serif;
   --font-mono: "Courier Prime", monospace;
-
-  /* Spacing */
-  --spacing-unit: 4px;
-  --spacing-gutter: 8px;
-  --spacing-window-padding: 12px;
-
-  /* Border radius */
-  --radius-sm: 0.125rem;
-  --radius-DEFAULT: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
-  --radius-full: 9999px;
 }
 
 /* ── Base ── */
@@ -70,7 +57,7 @@ html, body, #root {
 
 body {
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 13px;
   color: var(--color-on-surface);
   background-color: var(--color-surface);
 }
@@ -78,17 +65,17 @@ body {
 /* ── Retro OS Effects ── */
 .bevel-out {
   border: 2px solid;
-  border-color: var(--color-surface-bright) var(--color-on-surface) var(--color-on-surface) var(--color-surface-bright);
+  border-color: #ffffff #808080 #808080 #ffffff;
 }
 
 .bevel-in {
   border: 2px solid;
-  border-color: var(--color-on-surface) var(--color-surface-bright) var(--color-surface-bright) var(--color-on-surface);
+  border-color: #808080 #ffffff #ffffff #808080;
 }
 
 .raised-bevel {
   border: 2px solid;
-  border-color: var(--color-surface-container-lowest) var(--color-outline) var(--color-outline) var(--color-surface-container-lowest);
+  border-color: #ffffff #404040 #404040 #ffffff;
 }
 
 /* ── Desktop ── */
@@ -96,55 +83,85 @@ body {
   background-image: url('/bliss.jpg');
   background-size: cover;
   background-position: center;
+  background-color: #3a6ea5;
 }
 
-/* ── Taskbar ── */
+/* ── Taskbar (Luna Blue) ── */
 .taskbar {
   background: linear-gradient(
     180deg,
-    var(--color-primary-container) 0%,
-    var(--color-primary) 3%,
-    var(--color-primary-container) 6%,
-    var(--color-primary) 100%
+    #3c6df0 0%,
+    #2156d8 3%,
+    #3c6df0 6%,
+    #1e4fc7 50%,
+    #245edb 100%
   );
-  border-top: 2px solid var(--color-surface-bright);
+  border-top: 2px solid #69a5ff;
+}
+
+/* ── Start Button (Luna Green) ── */
+.start-button {
+  background: linear-gradient(
+    180deg,
+    #69b86c 0%,
+    #3c913d 3%,
+    #69b86c 6%,
+    #2d872e 50%,
+    #3c913d 100%
+  );
+  color: white;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
 }
 
 /* ── Window ── */
 .window {
   background: var(--color-surface-container-high);
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .title-bar {
   background: linear-gradient(
     90deg,
-    var(--color-primary) 0%,
-    var(--color-primary-container) 50%,
-    var(--color-primary) 100%
+    #0054e3 0%,
+    #3c6df0 20%,
+    #6b9fff 50%,
+    #3c6df0 80%,
+    #0054e3 100%
   );
   color: var(--color-on-primary);
   font-family: var(--font-headline);
   font-weight: 700;
   font-size: 12px;
-  padding: 2px 4px;
+  padding: 3px 5px;
+  border-radius: 4px 4px 0 0;
 }
 
-.title-bar-buttons button {
-  width: 20px;
-  height: 20px;
-  background: var(--color-surface-container-high);
-  font-size: 11px;
+.title-bar-buttons {
+  width: 18px;
+  height: 18px;
+  background: #3c6df0;
+  color: white;
+  font-size: 10px;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title-bar-buttons:hover {
+  background: #6b9fff;
 }
 
 .title-bar-close {
-  background: var(--color-error) !important;
-  color: var(--color-on-error) !important;
+  background: #d04030 !important;
+}
+.title-bar-close:hover {
+  background: #ff6050 !important;
 }
 
 /* ── Desktop Icons ── */
 .desktop-icon-text {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.8);
+  font-family: var(--font-body);
+  font-size: 11px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+  color: #fff;
 }

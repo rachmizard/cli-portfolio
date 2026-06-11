@@ -6,5 +6,6 @@ export interface AppWindow {
   icon: string;
   content: ReactNode;
   minimized: boolean;
+  maximized: boolean;
   zIndex: number;
 }

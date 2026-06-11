@@ -3,11 +3,13 @@ import type { AppWindow } from "../types";
 
 interface TaskbarProps {
   windows: AppWindow[];
+  startMenuOpen: boolean;
   onFocusWindow: (id: string) => void;
   onToggleMinimize: (id: string) => void;
+  onToggleStartMenu: () => void;
 }
 
-function Taskbar({ windows, onFocusWindow, onToggleMinimize }: TaskbarProps) {
+function Taskbar({ windows, startMenuOpen, onFocusWindow, onToggleMinimize, onToggleStartMenu }: TaskbarProps) {
   const [time, setTime] = useState("");
 
   useEffect(() => {
@@ -40,22 +42,24 @@ function Taskbar({ windows, onFocusWindow, onToggleMinimize }: TaskbarProps) {
   };
 
   return (
-    <div className="taskbar h-10 flex items-center px-1 gap-1 z-50">
-      <button className="bevel-out bg-secondary-container hover:brightness-110 px-3 py-0.5 rounded-full flex items-center gap-1 mr-2">
-        <span className="material-symbols-outlined text-[18px] text-on-secondary-container">
-          terminal
-        </span>
-        <span
-          className="font-bold text-[13px] text-on-secondary-container"
-          style={{ fontFamily: "'Work Sans', sans-serif" }}
-        >
-          Start
-        </span>
+    <div className="taskbar h-[30px] flex items-center px-1 gap-0.5 z-50 text-[12px]">
+      {/* Start Button */}
+      <button
+        onClick={onToggleStartMenu}
+        className={`px-3 py-0.5 rounded-bl-xl rounded-tl-xl flex items-center gap-1 font-bold transition-all text-[13px] ${
+          startMenuOpen
+            ? "bevel-in bg-surface-container-lowest text-on-surface"
+            : "bevel-out bg-secondary-container hover:brightness-110 text-on-secondary-container rounded-r-xl"
+        }`}
+      >
+        <span className="text-[13px]">🪟</span>
+        <span>Start</span>
       </button>
 
-      <div className="h-8 w-[1px] bg-outline-variant/30" />
+      <div className="h-6 w-[1px] bg-outline-variant/30 mx-0.5" />
 
-      <div className="flex-1 flex gap-1 overflow-x-auto">
+      {/* Window Buttons */}
+      <div className="flex-1 flex gap-0.5 overflow-x-auto">
         {windows.map((w) => {
           const visible = windows.filter((x) => !x.minimized);
           const topWindow = visible.sort((a, b) => b.zIndex - a.zIndex)[0];
@@ -65,28 +69,25 @@ function Taskbar({ windows, onFocusWindow, onToggleMinimize }: TaskbarProps) {
             <button
               key={w.id}
               onClick={() => handleTaskClick(w.id, w.minimized)}
-              className={`flex items-center gap-1 px-3 py-1 text-[12px] max-w-[160px] truncate transition-colors ${
+              className={`flex items-center gap-1 px-2 py-0.5 text-[11px] max-w-[160px] truncate transition-colors ${
                 isActive
                   ? "bevel-in bg-surface-container-lowest"
                   : "bevel-out bg-surface-container-low"
               }`}
-              style={{ fontFamily: "'Courier Prime', monospace" }}
+              style={{ fontFamily: "'Work Sans', sans-serif" }}
             >
-              <span className="material-symbols-outlined text-[14px] text-on-surface shrink-0">
-                terminal
-              </span>
+              <span className="text-on-surface shrink-0 text-[14px]">🪟</span>
               <span className="truncate text-on-surface">{w.title}</span>
             </button>
           );
         })}
       </div>
 
-      <div className="h-8 w-[1px] bg-outline-variant/30" />
+      <div className="h-6 w-[1px] bg-outline-variant/30 mx-0.5" />
 
-      <div
-        className="bevel-in bg-surface-container-lowest px-2 py-0.5 text-[12px] text-on-surface shrink-0"
-        style={{ fontFamily: "'Courier Prime', monospace" }}
-      >
+      {/* System tray */}
+      <div className="bevel-in bg-surface-container-lowest px-1.5 py-0.5 text-[11px] text-on-surface shrink-0 flex items-center gap-1"
+        style={{ fontFamily: "'Work Sans', sans-serif" }}>
         {time}
       </div>
     </div>
