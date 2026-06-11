@@ -1,0 +1,156 @@
+@import "tailwindcss";
+
+/* ── Legacy Desktop Design System (Windows XP Retro) ── */
+
+@theme {
+  /* Colors */
+  --color-surface: #fdfae8;
+  --color-surface-dim: #dddaca;
+  --color-surface-bright: #fdfae8;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f7f4e3;
+  --color-surface-container: #f1eedd;
+  --color-surface-container-high: #ece9d8;
+  --color-surface-container-highest: #e6e3d2;
+  --color-on-surface: #1c1c12;
+  --color-on-surface-variant: #434654;
+  --color-inverse-surface: #313126;
+  --color-inverse-on-surface: #f4f1e0;
+  --color-outline: #737686;
+  --color-outline-variant: #c3c6d6;
+  --color-surface-tint: #1355d2;
+  --color-primary: #0046b8;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #245edb;
+  --color-on-primary-container: #e0e5ff;
+  --color-inverse-primary: #b3c5ff;
+  --color-secondary: #126d1e;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #9ef896;
+  --color-on-secondary-container: #1b7424;
+  --color-tertiary: #6e4600;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #8e5c00;
+  --color-on-tertiary-container: #ffe1bd;
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* Typography */
+  --font-headline: "Work Sans", sans-serif;
+  --font-body: "Work Sans", sans-serif;
+  --font-mono: "Courier Prime", monospace;
+
+  /* Spacing */
+  --spacing-unit: 4px;
+  --spacing-gutter: 8px;
+  --spacing-window-padding: 12px;
+
+  /* Border radius */
+  --radius-sm: 0.125rem;
+  --radius-DEFAULT: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-full: 9999px;
+}
+
+/* ── Base ── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-on-surface);
+  background-color: var(--color-surface);
+}
+
+/* ── Retro OS Effects ── */
+.bevel-out {
+  border: 2px solid;
+  border-color: var(--color-surface-bright) var(--color-on-surface) var(--color-on-surface) var(--color-surface-bright);
+}
+
+.bevel-in {
+  border: 2px solid;
+  border-color: var(--color-on-surface) var(--color-surface-bright) var(--color-surface-bright) var(--color-on-surface);
+}
+
+.raised-bevel {
+  border: 2px solid;
+  border-color: var(--color-surface-container-lowest) var(--color-outline) var(--color-outline) var(--color-surface-container-lowest);
+}
+
+/* ── Desktop ── */
+.desktop {
+  background: linear-gradient(
+    180deg,
+    #3a6bd5 0%,
+    #5b8def 20%,
+    #87b9ff 45%,
+    #a8d8a8 65%,
+    #7cb868 80%,
+    #4a8c3f 100%
+  );
+}
+
+/* ── Taskbar ── */
+.taskbar {
+  background: linear-gradient(
+    180deg,
+    var(--color-primary-container) 0%,
+    var(--color-primary) 3%,
+    var(--color-primary-container) 6%,
+    var(--color-primary) 100%
+  );
+  border-top: 2px solid var(--color-surface-bright);
+}
+
+/* ── Window ── */
+.window {
+  background: var(--color-surface-container-high);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.title-bar {
+  background: linear-gradient(
+    90deg,
+    var(--color-primary) 0%,
+    var(--color-primary-container) 50%,
+    var(--color-primary) 100%
+  );
+  color: var(--color-on-primary);
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 12px;
+  padding: 2px 4px;
+}
+
+.title-bar-buttons button {
+  width: 20px;
+  height: 20px;
+  background: var(--color-surface-container-high);
+  font-size: 11px;
+}
+
+.title-bar-close {
+  background: var(--color-error) !important;
+  color: var(--color-on-error) !important;
+}
+
+/* ── Desktop Icons ── */
+.desktop-icon-text {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.8);
+}
