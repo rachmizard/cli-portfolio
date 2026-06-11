@@ -40,7 +40,7 @@ function StartMenu({
         {/* Left side - user banner (vertical) */}
         <div className="start-menu-user w-[28px] flex items-end justify-center pb-2 shrink-0">
           <span className="[writing-mode:vertical-rl] rotate-180 text-[18px] tracking-[3px]">
-            John Doe
+            Rachmizard
           </span>
         </div>
 
