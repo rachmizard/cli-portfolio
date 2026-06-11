@@ -36,7 +36,7 @@ function StartMenu({
   return (
     <>
       <div className="fixed inset-0 z-[9998]" onClick={onClose} />
-      <div className="fixed bottom-[28px] left-0 z-[9999] bevel-out-thin bg-surface-container-lowest w-[380px] shadow-xl flex font-body text-[11px]">
+      <div className="fixed bottom-[28px] left-0 z-[9999] bevel-out-thin bg-surface-container-lowest max-w-[380px] w-[calc(100vw-4px)] shadow-xl flex font-body text-[11px]">
         {/* Left side - user banner (vertical) */}
         <div className="start-menu-user w-[28px] flex items-end justify-center pb-2 shrink-0">
           <span className="[writing-mode:vertical-rl] rotate-180 text-[18px] tracking-[3px]">
