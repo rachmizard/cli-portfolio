@@ -181,6 +181,24 @@ body {
   background: linear-gradient(180deg, #5b8ef5 0%, #4981e8 50%, #3168d5 100%);
 }
 
+/* ── Quick Launch ── */
+.quick-launch {
+  border-left: 1px solid rgba(0,0,0,0.25);
+  border-right: 1px solid rgba(255,255,255,0.35);
+  box-shadow: inset 1px 0 0 rgba(255,255,255,0.2);
+  height: 22px;
+}
+.ql-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.ql-btn:hover {
+  background: rgba(255,255,255,0.2);
+  outline: 1px solid rgba(255,255,255,0.4);
+}
+
 /* ── System Tray ── */
 .tray {
   background: linear-gradient(
@@ -202,6 +220,12 @@ body {
   background: var(--color-surface-container-high);
   border-radius: 8px 8px 0 0;
 }
+.window-active {
+  box-shadow: 4px 4px 12px rgba(0,0,0,0.5);
+}
+.window-inactive {
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+}
 
 .title-bar {
   background: linear-gradient(
@@ -218,6 +242,25 @@ body {
   font-size: 12px;
   padding: 4px 6px;
   border-radius: 7px 7px 0 0;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+}
+/* Inactive window title bar — desaturated XP blue */
+.title-bar.inactive {
+  background: linear-gradient(
+    180deg,
+    #7a9fd6 0%,
+    #91b0e0 10%,
+    #b3cbf0 40%,
+    #91b0e0 80%,
+    #6e93cc 100%
+  );
+  text-shadow: none;
+}
+.title-bar.inactive .title-bar-buttons:not(.title-bar-close) {
+  filter: saturate(0.5) brightness(1.05);
+}
+.title-bar.inactive .title-bar-close {
+  filter: saturate(0.6);
 }
 
 .title-bar-buttons {
@@ -255,28 +298,66 @@ body {
   filter: brightness(1.2);
 }
 
-/* ── Start Menu ── */
-.start-menu-user {
-  background: linear-gradient(180deg, #245edb 0%, #1a4cc7 100%);
-  color: #ffffff;
-  font-family: var(--font-body);
-  font-weight: 700;
-  font-size: 13px;
+/* ── Start Menu (two-column XP) ── */
+.start-menu {
+  border: 1px solid #003ca5;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  background: #fff;
 }
-.start-menu-item {
+.start-header {
+  background: linear-gradient(180deg, #1c5fd6 0%, #2f7ae8 45%, #1c5fd6 55%, #0a44b5 100%);
+  border-bottom: 2px solid #ec8a00;
+  box-shadow: inset 0 -2px 0 #f8b042;
+}
+.start-avatar {
+  border: 2px solid #fff;
+  border-radius: 4px;
+  background: #fcd28a;
+  padding: 1px;
+  line-height: 0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+.start-col-left {
+  background: #fff;
+}
+.start-col-right {
+  background: linear-gradient(180deg, #d3e5fa 0%, #cfe0f7 100%);
+  border-left: 1px solid #aac4e8;
+}
+.start-item {
   font-family: var(--font-body);
   font-size: 11px;
-  padding: 6px 12px;
+  padding: 5px 10px;
+  color: #000;
 }
-.start-menu-item:hover {
+.start-item:hover {
   background: var(--color-win-blue);
-  color: #ffffff;
+  color: #fff;
 }
-.start-menu-footer {
-  font-family: var(--font-body);
+.start-item-right {
+  font-weight: 700;
+  color: #0b2f6b;
+}
+.start-item-right:hover {
+  background: var(--color-win-blue);
+  color: #fff;
+}
+.start-sep {
+  border-top: 1px solid #aac4e8;
+  margin: 4px 8px;
+}
+.start-allprograms {
+  padding-right: 12px;
+}
+.start-footer {
+  background: linear-gradient(180deg, #4a91e2 0%, #2f7ae8 40%, #1c5fd6 100%);
+  border-top: 2px solid #ec8a00;
+  box-shadow: inset 0 2px 0 #f8b042;
   font-size: 11px;
-  color: #666;
-  background: #e0ddd0;
+}
+.start-footer button {
+  font-family: var(--font-body);
 }
 
 /* ── Winamp ── */
@@ -386,5 +467,16 @@ body {
   /* FileExplorer sidebar collapse on small phones */
   .explorer-sidebar {
     display: none;
+  }
+
+  /* Start menu: stack columns */
+  .start-menu {
+    width: calc(100vw - 4px) !important;
+  }
+  .start-menu .flex {
+    flex-direction: row;
+  }
+  .start-col-right {
+    width: 130px;
   }
 }

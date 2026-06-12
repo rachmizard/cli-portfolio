@@ -1,10 +1,13 @@
 import { useState, useEffect, useCallback, useRef, type ReactNode, type MouseEvent, type TouchEvent } from "react";
+import { AppIcon } from "./Icons";
 
 interface WindowProps {
   title: string;
+  iconKey: string;
   children: ReactNode;
   zIndex: number;
   maximized: boolean;
+  active: boolean;
   onFocus: () => void;
   onMinimize: () => void;
   onMaximize: () => void;
@@ -23,8 +26,9 @@ type ResizeDir = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
 
 const MIN_W = 220;
 const MIN_H = 140;
+const TASKBAR_H = 28;
 
-function Window({ title, children, zIndex, maximized, onFocus, onMinimize, onMaximize, onClose }: WindowProps) {
+function Window({ title, iconKey, children, zIndex, maximized, active, onFocus, onMinimize, onMaximize, onClose }: WindowProps) {
   const [rect, setRect] = useState<Rect>({ x: 80, y: 60, w: 420, h: 320 });
   const [interaction, setInteraction] = useState<"none" | "drag" | "resize">("none");
   const interactionStart = useRef({ x: 0, y: 0 });
@@ -45,6 +49,16 @@ function Window({ title, children, zIndex, maximized, onFocus, onMinimize, onMax
     };
     setRect(r);
     rectSnapshot.current = r;
+  }, []);
+
+  // Keep the title bar reachable: clamp so it never leaves the viewport
+  const clampPos = useCallback((x: number, y: number, w: number): { x: number; y: number } => {
+    const maxX = window.innerWidth - 60;
+    const maxY = window.innerHeight - TASKBAR_H - 30;
+    return {
+      x: Math.min(Math.max(x, 60 - w), maxX),
+      y: Math.min(Math.max(y, 0), maxY),
+    };
   }, []);
 
   // ── Drag ──
@@ -86,11 +100,13 @@ function Window({ title, children, zIndex, maximized, onFocus, onMinimize, onMax
   useEffect(() => {
     const onMouseMove = (e: globalThis.MouseEvent) => {
       if (interaction === "drag") {
-        setRect(prev => ({
-          ...prev,
-          x: rectSnapshot.current.x + (e.clientX - interactionStart.current.x),
-          y: rectSnapshot.current.y + (e.clientY - interactionStart.current.y),
-        }));
+        const snap = rectSnapshot.current;
+        const pos = clampPos(
+          snap.x + (e.clientX - interactionStart.current.x),
+          snap.y + (e.clientY - interactionStart.current.y),
+          snap.w,
+        );
+        setRect(prev => ({ ...prev, x: pos.x, y: pos.y }));
       } else if (interaction === "resize") {
         const dx = e.clientX - interactionStart.current.x;
         const dy = e.clientY - interactionStart.current.y;
@@ -124,7 +140,7 @@ function Window({ title, children, zIndex, maximized, onFocus, onMinimize, onMax
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("touchend", onUp);
     };
-  }, [interaction]);
+  }, [interaction, clampPos]);
 
   // ── Styles ──
   const winStyle = maximized
@@ -141,23 +157,27 @@ function Window({ title, children, zIndex, maximized, onFocus, onMinimize, onMax
 
   return (
     <div
-      className={`absolute window flex flex-col shadow-xl ${maximized ? "" : "raised-bevel rounded-t-lg"}`}
+      className={`absolute window flex flex-col ${active ? "window-active" : "window-inactive"} ${maximized ? "" : "raised-bevel rounded-t-lg"}`}
       style={winStyle as React.CSSProperties}
       onMouseDown={onFocus}
       onTouchStart={onFocus}
     >
       {/* Title Bar */}
       <div
-        className="title-bar flex items-center justify-between select-none touch-none"
+        className={`title-bar flex items-center justify-between select-none touch-none ${active ? "" : "inactive"}`}
         style={{ cursor: maximized ? "default" : "move" }}
         onMouseDown={handleTitleMouseDown}
         onTouchStart={handleTitleTouchStart}
+        onDoubleClick={onMaximize}
       >
-        <span className="truncate mr-2">{title}</span>
+        <div className="flex items-center gap-1.5 min-w-0">
+          <AppIcon iconKey={iconKey} size={16} />
+          <span className="truncate mr-2">{title}</span>
+        </div>
         <div className="flex gap-[2px] shrink-0">
-          <button onClick={onMinimize} className="title-bar-buttons bevel-out flex items-center justify-center text-on-surface leading-none" aria-label="Minimize">_</button>
-          <button onClick={onMaximize} className="title-bar-buttons bevel-out flex items-center justify-center text-on-surface leading-none" aria-label="Maximize">□</button>
-          <button onClick={onClose} className="title-bar-buttons bevel-out flex items-center justify-center title-bar-close leading-none font-bold" aria-label="Close">✕</button>
+          <button onClick={(e) => { e.stopPropagation(); onMinimize(); }} className="title-bar-buttons bevel-out flex items-center justify-center text-on-surface leading-none" aria-label="Minimize">_</button>
+          <button onClick={(e) => { e.stopPropagation(); onMaximize(); }} className="title-bar-buttons bevel-out flex items-center justify-center text-on-surface leading-none" aria-label={maximized ? "Restore" : "Maximize"}>{maximized ? "❐" : "□"}</button>
+          <button onClick={(e) => { e.stopPropagation(); onClose(); }} className="title-bar-buttons bevel-out flex items-center justify-center title-bar-close leading-none font-bold" aria-label="Close">✕</button>
         </div>
       </div>
 

@@ -1,98 +1,98 @@
-import { IconTerminal, IconFolder, IconDocument, IconInfo, IconWinamp } from "./Icons";
-import { WINAMP_CONTENT } from "../content";
+import { IconTerminal, IconFolder, IconDocument, IconInfo, IconWinamp, IconPDF, IconMyComputer, IconUser } from "./Icons";
+import { WELCOME_CONTENT, PROJECTS_CONTENT, ABOUT_CONTENT, WINAMP_CONTENT, COMPUTER_CONTENT } from "../content";
 
 interface StartMenuProps {
   visible: boolean;
   onClose: () => void;
   onOpenWindow: (id: string, title: string, icon: string, content: React.ReactNode) => void;
-  aboutContent: React.ReactNode;
-  projectsContent: React.ReactNode;
-  skillsContent: React.ReactNode;
 }
 
-const MENU_ITEMS = [
-  { id: "about", label: "About Me", icon: IconInfo, role: "about" as const },
-  { id: "projects", label: "Projects", icon: IconFolder, role: "projects" as const },
-  { divider: true },
-  { id: "skills", label: "Skills", icon: IconTerminal, role: "skills" as const },
-  { divider: true },
-  { id: "winamp", label: "Winamp", icon: IconWinamp, role: "winamp" as const },
-  { id: "cv", label: "CV.pdf", icon: IconDocument, role: "cv" as const },
+interface ProgramItem {
+  id: string;
+  label: string;
+  Icon: (p: { size?: number }) => JSX.Element;
+  iconKey: string;
+  title: string;
+  content: React.ReactNode | null;
+  href?: string;
+}
+
+// Left column — pinned + recent programs
+const PROGRAMS: ProgramItem[] = [
+  { id: "skills", label: "Skills", Icon: IconTerminal, iconKey: "skills", title: "Skills.exe - Command Prompt", content: WELCOME_CONTENT },
+  { id: "about", label: "About Me", Icon: IconInfo, iconKey: "about", title: "About Me.txt - Notepad", content: ABOUT_CONTENT },
+  { id: "winamp", label: "Winamp", Icon: IconWinamp, iconKey: "winamp", title: "Winamp 2.91", content: WINAMP_CONTENT },
+  { id: "cv", label: "CV.pdf", Icon: IconPDF, iconKey: "document", title: "", content: null, href: "/cv.pdf" },
 ];
 
-function StartMenu({
-  visible,
-  onClose,
-  onOpenWindow,
-  aboutContent,
-  projectsContent,
-  skillsContent,
-}: StartMenuProps) {
+// Right column — "My Places" style shortcuts
+const PLACES: ProgramItem[] = [
+  { id: "projects", label: "My Documents", Icon: IconFolder, iconKey: "projects", title: "Projects - File Explorer", content: PROJECTS_CONTENT },
+  { id: "computer", label: "My Computer", Icon: IconMyComputer, iconKey: "computer", title: "My Computer", content: COMPUTER_CONTENT },
+];
+
+function StartMenu({ visible, onClose, onOpenWindow }: StartMenuProps) {
   if (!visible) return null;
 
-  const contentMap: Record<string, React.ReactNode> = {
-    about: aboutContent,
-    projects: projectsContent,
-    skills: skillsContent,
-    winamp: null, // handled separately via import
+  const handle = (item: ProgramItem) => {
+    if (item.href) {
+      window.open(item.href, "_blank");
+    } else {
+      onOpenWindow(item.id, item.title || item.label, item.iconKey, item.content);
+    }
+    onClose();
   };
 
   return (
     <>
       <div className="fixed inset-0 z-[9998]" onClick={onClose} />
-      <div className="fixed bottom-[28px] left-0 z-[9999] bevel-out-thin bg-surface-container-lowest max-w-[380px] w-[calc(100vw-4px)] shadow-xl flex font-body text-[11px]">
-        {/* Left side - user banner (vertical) */}
-        <div className="start-menu-user w-[28px] flex items-end justify-center pb-2 shrink-0">
-          <span className="[writing-mode:vertical-rl] rotate-180 text-[18px] tracking-[3px]">
-            Rachmizard
-          </span>
+      <div className="start-menu fixed bottom-[28px] left-0 z-[9999] w-[340px] max-w-[calc(100vw-4px)] shadow-2xl flex flex-col font-body text-[11px]">
+        {/* Header — blue gradient with avatar */}
+        <div className="start-header flex items-center gap-2 px-3 py-2">
+          <div className="start-avatar shrink-0">
+            <IconUser size={36} />
+          </div>
+          <span className="text-white font-bold text-[15px] drop-shadow">Rachmizard</span>
         </div>
 
-        {/* Menu items */}
-        <div className="flex-1 py-1">
-          {MENU_ITEMS.map((item: any, i: number) => {
-            if (item.divider) {
-              return <div key={i} className="border-t border-outline-variant my-1 mx-2" />;
-            }
-            const Icon = item.icon;
-            return (
-              <button
-                key={i}
-                className="start-menu-item w-full text-left flex items-center gap-3"
-                onClick={() => {
-                  if (item.role === "cv") {
-                    window.open("/cv.pdf", "_blank");
-                  } else if (item.role === "winamp") {
-                    onOpenWindow(item.id!, "Winamp 2.91", item.id!, WINAMP_CONTENT);
-                  } else {
-                    const titles: Record<string, string> = {
-                      about: "About Me.txt - Notepad",
-                      projects: "Projects - File Explorer",
-                      skills: "Skills.exe - Command Prompt",
-                    };
-                    onOpenWindow(item.id!, titles[item.role!] || item.label!, item.id!, contentMap[item.role!]);
-                  }
-                  onClose();
-                }}
-              >
-                <div className="w-7 h-7 flex items-center justify-center">
-                  <Icon />
-                </div>
+        {/* Body — two columns */}
+        <div className="flex">
+          {/* Left — programs (white) */}
+          <div className="start-col-left flex-1 py-1">
+            {PROGRAMS.map((item) => (
+              <button key={item.id} onClick={() => handle(item)} className="start-item w-full text-left flex items-center gap-2">
+                <span className="w-7 h-7 flex items-center justify-center shrink-0"><item.Icon size={24} /></span>
                 <span>{item.label}</span>
               </button>
-            );
-          })}
-
-          <div className="border-t border-outline-variant my-1 mx-2" />
-
-          <div className="start-menu-footer flex justify-end gap-4 px-4 py-1">
-            <button className="hover:underline flex items-center gap-1">
-              <span>🔓</span> Log Off
-            </button>
-            <button className="hover:underline flex items-center gap-1">
-              <span>⏻</span> Turn Off
+            ))}
+            <div className="start-sep" />
+            <button onClick={onClose} className="start-item start-allprograms w-full text-left flex items-center justify-end gap-1 font-bold">
+              <span>All Programs</span>
+              <span className="text-[9px]">▶</span>
             </button>
           </div>
+
+          {/* Right — places (light blue) */}
+          <div className="start-col-right w-[140px] py-1">
+            {PLACES.map((item) => (
+              <button key={item.id} onClick={() => handle(item)} className="start-item start-item-right w-full text-left flex items-center gap-2">
+                <span className="w-6 h-6 flex items-center justify-center shrink-0"><item.Icon size={20} /></span>
+                <span>{item.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Footer — log off / turn off (green gradient) */}
+        <div className="start-footer flex justify-end gap-3 px-3 py-1.5">
+          <button onClick={onClose} className="flex items-center gap-1.5 hover:underline text-white">
+            <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="#e8a33d" stroke="#fff" strokeWidth="1" /><path d="M10 5V10L13 12" stroke="#fff" strokeWidth="1.5" fill="none" strokeLinecap="round" /></svg>
+            <span>Log Off</span>
+          </button>
+          <button onClick={() => window.location.reload()} className="flex items-center gap-1.5 hover:underline text-white">
+            <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="#cc3333" stroke="#fff" strokeWidth="1" /><path d="M10 4V10M6 6.5C4.5 8 4.5 12 7 13.5C9 14.7 11 14.7 13 13.5C15.5 12 15.5 8 14 6.5" stroke="#fff" strokeWidth="1.5" fill="none" strokeLinecap="round" /></svg>
+            <span>Turn Off</span>
+          </button>
         </div>
       </div>
     </>

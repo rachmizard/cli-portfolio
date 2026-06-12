@@ -29,6 +29,35 @@ export const PROJECTS_CONTENT: ReactNode = <FileExplorer />;
 
 export const WINAMP_CONTENT: ReactNode = <Winamp />;
 
+export const COMPUTER_CONTENT: ReactNode = (
+  <div className="p-4 font-body text-[11px] space-y-3 h-full overflow-y-auto bg-white">
+    <div className="font-bold text-[12px] text-on-surface border-b border-outline-variant pb-1">Files Stored on This Computer</div>
+    <div className="space-y-2">
+      <div className="bevel-in bg-surface-container-lowest p-2">
+        <p className="text-secondary font-bold">Hard Disk Drives</p>
+        <p className="text-on-surface mt-1">Local Disk (C:) — 38.1 GB free of 74.5 GB</p>
+      </div>
+      <div className="bevel-in bg-surface-container-lowest p-2">
+        <p className="text-secondary font-bold">Devices with Removable Storage</p>
+        <p className="text-on-surface mt-1">3½ Floppy (A:)</p>
+        <p className="text-on-surface">CD Drive (D:)</p>
+      </div>
+      <div className="bevel-in bg-surface-container-lowest p-2 space-y-1">
+        <p className="text-tertiary">System: Windows XP Professional</p>
+        <p className="text-tertiary">Processor: Rachmizard Core @ 5.0 GHz</p>
+        <p className="text-tertiary">Memory: 1.00 GB RAM</p>
+      </div>
+    </div>
+  </div>
+);
+
+export const RECYCLE_CONTENT: ReactNode = (
+  <div className="flex flex-col items-center justify-center h-full font-body text-[11px] text-outline bg-white gap-2 p-6 text-center">
+    <p className="text-[12px] text-on-surface">The Recycle Bin is empty.</p>
+    <p>There are no items to display. Drag deleted regrets here.</p>
+  </div>
+);
+
 export const ABOUT_CONTENT: ReactNode = (
   <div className="p-4 font-mono text-[13px] leading-[18px] space-y-3">
     <div className="bevel-in bg-surface-container-lowest p-3">

@@ -1,19 +1,20 @@
 import { useState, useEffect, useCallback, type ReactNode, type MouseEvent as ReactMouseEvent } from "react";
 import Window from "./Window";
-import { WELCOME_CONTENT, PROJECTS_CONTENT, ABOUT_CONTENT, WINAMP_CONTENT } from "../content";
-import { IconDocument, IconFolder, IconTerminal, IconPDF, IconWinamp } from "./Icons";
+import { WELCOME_CONTENT, PROJECTS_CONTENT, ABOUT_CONTENT, WINAMP_CONTENT, COMPUTER_CONTENT, RECYCLE_CONTENT } from "../content";
+import { IconDocument, IconFolder, IconTerminal, IconPDF, IconWinamp, IconMyComputer, IconRecycleBin } from "./Icons";
 import type { AppWindow } from "../types";
 
 interface DesktopIcon {
   id: string;
   title: string;
-  Icon: () => JSX.Element;
+  Icon: (p: { size?: number }) => JSX.Element;
   content: ReactNode | null;
   windowTitle: string;
 }
 
 interface DesktopProps {
   windows: AppWindow[];
+  activeId: string;
   onOpenWindow: (id: string, title: string, icon: string, content: ReactNode) => void;
   onFocusWindow: (id: string) => void;
   onCloseWindow: (id: string) => void;
@@ -29,15 +30,18 @@ interface ContextMenu {
 }
 
 const DESKTOP_ICONS: DesktopIcon[] = [
+  { id: "computer", title: "My Computer", Icon: IconMyComputer, content: COMPUTER_CONTENT, windowTitle: "My Computer" },
   { id: "about", title: "About Me.txt", Icon: IconDocument, content: ABOUT_CONTENT, windowTitle: "About Me.txt - Notepad" },
   { id: "projects", title: "Projects", Icon: IconFolder, content: PROJECTS_CONTENT, windowTitle: "Projects - File Explorer" },
   { id: "skills", title: "Skills.exe", Icon: IconTerminal, content: WELCOME_CONTENT, windowTitle: "Skills.exe - Command Prompt" },
   { id: "cv", title: "CV.pdf", Icon: IconPDF, content: null, windowTitle: "" },
   { id: "winamp", title: "Winamp", Icon: IconWinamp, content: null, windowTitle: "Winamp 2.91" },
+  { id: "recycle", title: "Recycle Bin", Icon: IconRecycleBin, content: RECYCLE_CONTENT, windowTitle: "Recycle Bin" },
 ];
 
 function Desktop({
   windows,
+  activeId,
   onOpenWindow,
   onFocusWindow,
   onCloseWindow,
@@ -99,7 +103,7 @@ function Desktop({
             className={`desktop-icon ${selectedIcon === icon.id ? "selected" : ""}`}
           >
             <div className="w-10 h-10 flex items-center justify-center pointer-events-none">
-              <icon.Icon />
+              <icon.Icon size={32} />
             </div>
             <span className="desktop-icon-text">{icon.title}</span>
           </button>
@@ -114,8 +118,10 @@ function Desktop({
           <Window
             key={w.id}
             title={w.title}
+            iconKey={w.icon}
             zIndex={w.zIndex}
             maximized={w.maximized}
+            active={w.id === activeId}
             onFocus={() => onFocusWindow(w.id)}
             onMinimize={() => onToggleMinimize(w.id)}
             onMaximize={() => onMaximizeWindow(w.id)}
