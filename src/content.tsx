@@ -11,13 +11,13 @@ export const WELCOME_CONTENT: ReactNode = (
     <div className="bevel-in bg-surface-container-lowest p-3 space-y-1">
       <p className="text-secondary font-bold">C:\Users\rachmizard&gt; whoami</p>
       <p className="text-on-surface">
-        Full-stack developer with 5+ years building web apps. Love clean architecture, typed APIs, and retro UIs.
+        A hard working and persistent web developer with over 7 years of experience. Previously worked at several IT companies, on both front-end and back-end. Proven skills in React, Next.js, and TanStack Start with TypeScript, mobile development with React Native and Flutter, plus Go and Node.js/Express web service APIs — a full-stack JavaScript developer.
       </p>
     </div>
     <div className="bevel-in bg-surface-container-lowest p-3 space-y-1">
       <p className="text-secondary font-bold">C:\Users\rachmizard&gt; skills --list</p>
       <div className="flex flex-wrap gap-2 mt-1">
-        {["React", "TypeScript", "Next.js", "Node.js", "Tailwind", "PostgreSQL", "Docker", "REST APIs"].map((s) => (
+        {["React", "Next.js", "TanStack Start", "TypeScript", "React Native", "Flutter", "Go", "Node.js", "Express", "PostgreSQL"].map((s) => (
           <span key={s} className="bg-primary-container text-on-primary-container px-2 py-0.5 text-[11px] bevel-out">{s}</span>
         ))}
       </div>
@@ -66,7 +66,7 @@ export const ABOUT_CONTENT: ReactNode = (
         <p><span className="text-tertiary">Name:</span> <span className="text-on-surface">Rachmizard</span></p>
         <p><span className="text-tertiary">Role:</span> <span className="text-on-surface">Senior Full-Stack Developer</span></p>
         <p><span className="text-tertiary">Location:</span> <span className="text-on-surface">Jakarta, Indonesia</span></p>
-        <p><span className="text-tertiary">Experience:</span> <span className="text-on-surface">5+ years</span></p>
+        <p><span className="text-tertiary">Experience:</span> <span className="text-on-surface">7+ years</span></p>
       </div>
     </div>
   </div>
