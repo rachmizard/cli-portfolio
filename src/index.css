@@ -72,12 +72,11 @@ body {
   border-color: #ffffff #808080 #808080 #ffffff;
 }
 
-/* ── Desktop ── */
+/* ── Desktop (wallpaper applied via inline style from App) ── */
 .desktop {
-  background-image: url('/bliss.jpg');
+  background-color: #3a6ea5;
   background-size: cover;
   background-position: center bottom;
-  background-color: #3a6ea5;
 }
 
 /* ── Desktop Icons (no blue bg by default) ── */

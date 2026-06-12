@@ -2,7 +2,10 @@ import { useState, useEffect } from "react";
 import Desktop from "./components/Desktop";
 import Taskbar from "./components/Taskbar";
 import StartMenu from "./components/StartMenu";
+import DisplayProperties from "./components/DisplayProperties";
 import { WELCOME_CONTENT } from "./content";
+import { useWallpaper } from "./useWallpaper";
+import { resolveCss } from "./wallpapers";
 import type { AppWindow } from "./types";
 
 function App() {
@@ -10,6 +13,7 @@ function App() {
   const [nextZ, setNextZ] = useState(1);
   const [activeId, setActiveId] = useState<string>("welcome");
   const [startMenuOpen, setStartMenuOpen] = useState(false);
+  const { wallpaper, setWallpaper } = useWallpaper();
 
   useEffect(() => {
     setWindows([
@@ -37,7 +41,7 @@ function App() {
       if (existing) {
         return prev.map((w) =>
           w.id === id
-            ? { ...w, minimized: false, zIndex: nextZ }
+            ? { ...w, minimized: false, zIndex: nextZ, content }
             : w,
         );
       }
@@ -89,17 +93,31 @@ function App() {
     setActiveId("");
   };
 
+  const openDisplayProperties = () => {
+    openWindow(
+      "display",
+      "Display Properties",
+      "settings",
+      <DisplayProperties
+        current={wallpaper}
+        onApply={setWallpaper}
+        onClose={() => closeWindow("display")}
+      />,
+    );
+  };
+
   return (
     <div className="h-full flex flex-col">
       <Desktop
         windows={windows}
         activeId={activeId}
+        wallpaperCss={resolveCss(wallpaper)}
         onOpenWindow={openWindow}
         onFocusWindow={focusWindow}
         onCloseWindow={closeWindow}
         onToggleMinimize={toggleMinimize}
         onMaximizeWindow={toggleMaximize}
-        onStartMenuOpen={() => setStartMenuOpen(true)}
+        onOpenDisplayProperties={openDisplayProperties}
       />
       <Taskbar
         windows={windows}

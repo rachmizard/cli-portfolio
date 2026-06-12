@@ -1,90 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-
-// ── Types ──
-interface Track {
-  id: string;
-  artist: string;
-  title: string;
-  duration: string;
-  previewUrl: string;
-  album?: string;
-}
-
-// ── Demo tracks with Spotify preview URLs ──
-const DEMO_TRACKS: Track[] = [
-  {
-    id: "1",
-    artist: "Daft Punk",
-    title: "Something About Us",
-    duration: "3:52",
-    previewUrl: "https://p.scdn.co/mp3-preview/4c94b54f75076a19b0c2d4778e1e2a1a0ebf5e9b",
-    album: "Discovery",
-  },
-  {
-    id: "2",
-    artist: "Tame Impala",
-    title: "The Less I Know The Better",
-    duration: "3:38",
-    previewUrl: "https://p.scdn.co/mp3-preview/9f48ae5d747ad3c3bc0ea6d8c4bf60f4542a1e1e",
-    album: "Currents",
-  },
-  {
-    id: "3",
-    artist: "Mac DeMarco",
-    title: "Chamber of Reflection",
-    duration: "3:52",
-    previewUrl: "https://p.scdn.co/mp3-preview/30c4b1b23b68523b38bb2a25b1e2b0245d7391da",
-    album: "Salad Days",
-  },
-  {
-    id: "4",
-    artist: "Gorillaz",
-    title: "On Melancholy Hill",
-    duration: "3:53",
-    previewUrl: "https://p.scdn.co/mp3-preview/c8b6c5a1e5c2e5b8b8b8b8b8b8b8b8b8b8b8b8b8",
-    album: "Plastic Beach",
-  },
-  {
-    id: "5",
-    artist: "MGMT",
-    title: "Electric Feel",
-    duration: "3:49",
-    previewUrl: "https://p.scdn.co/mp3-preview/d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4",
-    album: "Oracular Spectacular",
-  },
-  {
-    id: "6",
-    artist: "The Strokes",
-    title: "Reptilia",
-    duration: "3:41",
-    previewUrl: "",
-    album: "Room on Fire",
-  },
-  {
-    id: "7",
-    artist: "Arctic Monkeys",
-    title: "Do I Wanna Know?",
-    duration: "4:33",
-    previewUrl: "",
-    album: "AM",
-  },
-  {
-    id: "8",
-    artist: "Tame Impala",
-    title: "Let It Happen",
-    duration: "7:47",
-    previewUrl: "",
-    album: "Currents",
-  },
-];
+import { useRecentlyPlayed } from "../useRecentlyPlayed";
 
 // ── Visualizer bars count ──
 const VIS_BARS = 19;
 
 // ── Component ──
 function Winamp() {
-  // State
-  const [playlist] = useState<Track[]>(DEMO_TRACKS);
+  // Playlist sourced from Spotify recently-played (with curated fallback)
+  const { tracks: playlist, status } = useRecentlyPlayed();
   const [currentIdx, setCurrentIdx] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [shuffle, setShuffle] = useState(false);
@@ -103,7 +26,12 @@ function Winamp() {
   const animFrameRef = useRef<number>(0);
   const isSetup = useRef(false);
 
-  const currentTrack = playlist[currentIdx];
+  const currentTrack = playlist[currentIdx] ?? playlist[0];
+
+  // Reset selection if the playlist changes (e.g. API tracks replace fallback)
+  useEffect(() => {
+    setCurrentIdx((i) => (i < playlist.length ? i : 0));
+  }, [playlist]);
 
   // ── Audio setup ──
   const setupAudio = useCallback(() => {
@@ -266,7 +194,9 @@ function Winamp() {
       {/* ═══ TITLE BAR ═══ */}
       <div className="wa-titlebar-small flex items-center justify-between px-[3px] h-[14px] bg-gradient-to-b from-[#3a3a5e] to-[#1a1a2e] border-b border-[#0a0a1e] shrink-0">
         <span className="text-[#a0a0c0] text-[8px] font-bold tracking-[0.5px]">WINAMP 2.91</span>
-        <span className="text-[#20ff60] text-[8px] font-mono">-rachmizard-</span>
+        <span className="text-[#20ff60] text-[8px] font-mono">
+          {status === "live" ? "● spotify" : status === "loading" ? "○ syncing…" : "-rachmizard-"}
+        </span>
       </div>
 
       {/* ═══ DISPLAY ═══ */}
@@ -418,6 +348,8 @@ function Winamp() {
             <div
               key={track.id}
               onClick={() => { setCurrentIdx(i); setPlaying(false); }}
+              onDoubleClick={() => { if (track.spotifyUrl) window.open(track.spotifyUrl, "_blank"); }}
+              title={track.spotifyUrl ? "Double-click to open in Spotify" : undefined}
               className={`px-[4px] py-px whitespace-nowrap cursor-pointer ${
                 i === currentIdx
                   ? "bg-[#20ff60] text-[#0a0a12]"
@@ -430,7 +362,7 @@ function Winamp() {
           ))}
         </div>
         <div className="text-[#20ff60] text-[8px] text-right px-[6px] pb-[2px] font-mono">
-          {playlist.length} tracks — {currentTrack.duration} total (preview)
+          {playlist.length} tracks — {status === "live" ? "recently played on Spotify" : "curated"}
         </div>
         <div className="flex gap-[3px] p-[2px_3px_3px_3px]">
           <button className="wa-pl-btn">+ Add</button>
@@ -445,4 +377,3 @@ function Winamp() {
 }
 
 export default Winamp;
-export { DEMO_TRACKS };

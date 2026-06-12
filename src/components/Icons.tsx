@@ -104,6 +104,7 @@ export const APP_ICONS: Record<string, (p: IconProps) => JSX.Element> = {
   winamp: IconWinamp,
   computer: IconMyComputer,
   recycle: IconRecycleBin,
+  settings: IconSettings,
   terminal: IconTerminal,
   document: IconDocument,
   folder: IconFolder,

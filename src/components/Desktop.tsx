@@ -15,12 +15,13 @@ interface DesktopIcon {
 interface DesktopProps {
   windows: AppWindow[];
   activeId: string;
+  wallpaperCss: string;
   onOpenWindow: (id: string, title: string, icon: string, content: ReactNode) => void;
   onFocusWindow: (id: string) => void;
   onCloseWindow: (id: string) => void;
   onToggleMinimize: (id: string) => void;
   onMaximizeWindow: (id: string) => void;
-  onStartMenuOpen: () => void;
+  onOpenDisplayProperties: () => void;
 }
 
 interface ContextMenu {
@@ -42,12 +43,13 @@ const DESKTOP_ICONS: DesktopIcon[] = [
 function Desktop({
   windows,
   activeId,
+  wallpaperCss,
   onOpenWindow,
   onFocusWindow,
   onCloseWindow,
   onToggleMinimize,
   onMaximizeWindow,
-  onStartMenuOpen,
+  onOpenDisplayProperties,
 }: DesktopProps) {
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
   const [contextMenu, setContextMenu] = useState<ContextMenu>({ x: 0, y: 0, visible: false });
@@ -78,6 +80,7 @@ function Desktop({
   return (
     <div
       className="flex-1 relative desktop select-none"
+      style={{ background: wallpaperCss }}
       onContextMenu={handleContextMenu}
       onClick={handleDesktopClick}
     >
@@ -147,7 +150,7 @@ function Desktop({
             { divider: true },
             { label: "New", disabled: true },
             { divider: true },
-            { label: "Properties", action: onStartMenuOpen },
+            { label: "Properties", action: onOpenDisplayProperties },
           ].map((item, i) => {
             if ("divider" in item) {
               return <div key={i} className="border-t border-outline-variant my-0.5" />;
