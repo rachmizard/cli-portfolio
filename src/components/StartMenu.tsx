@@ -5,6 +5,7 @@ interface StartMenuProps {
   visible: boolean;
   onClose: () => void;
   onOpenWindow: (id: string, title: string, icon: string, content: React.ReactNode) => void;
+  onTurnOff: () => void;
 }
 
 interface ProgramItem {
@@ -31,7 +32,7 @@ const PLACES: ProgramItem[] = [
   { id: "computer", label: "My Computer", Icon: IconMyComputer, iconKey: "computer", title: "My Computer", content: COMPUTER_CONTENT },
 ];
 
-function StartMenu({ visible, onClose, onOpenWindow }: StartMenuProps) {
+function StartMenu({ visible, onClose, onOpenWindow, onTurnOff }: StartMenuProps) {
   if (!visible) return null;
 
   const handle = (item: ProgramItem) => {
@@ -41,6 +42,20 @@ function StartMenu({ visible, onClose, onOpenWindow }: StartMenuProps) {
       onOpenWindow(item.id, item.title || item.label, item.iconKey, item.content);
     }
     onClose();
+  };
+
+  const playSound = (src: string) => {
+    const audio = new Audio(src);
+    audio.play().catch(() => {});
+  };
+
+  const handleLogOff = () => {
+    playSound("/xp-logoff.mp3");
+    onClose();
+  };
+
+  const handleTurnOff = () => {
+    onTurnOff();
   };
 
   return (
@@ -85,11 +100,11 @@ function StartMenu({ visible, onClose, onOpenWindow }: StartMenuProps) {
 
         {/* Footer — log off / turn off (green gradient) */}
         <div className="start-footer flex justify-end gap-3 px-3 py-1.5">
-          <button onClick={onClose} className="flex items-center gap-1.5 hover:underline text-white">
+          <button onClick={handleLogOff} className="flex items-center gap-1.5 hover:underline text-white">
             <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="#e8a33d" stroke="#fff" strokeWidth="1" /><path d="M10 5V10L13 12" stroke="#fff" strokeWidth="1.5" fill="none" strokeLinecap="round" /></svg>
             <span>Log Off</span>
           </button>
-          <button onClick={() => window.location.reload()} className="flex items-center gap-1.5 hover:underline text-white">
+          <button onClick={handleTurnOff} className="flex items-center gap-1.5 hover:underline text-white">
             <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="#cc3333" stroke="#fff" strokeWidth="1" /><path d="M10 4V10M6 6.5C4.5 8 4.5 12 7 13.5C9 14.7 11 14.7 13 13.5C15.5 12 15.5 8 14 6.5" stroke="#fff" strokeWidth="1.5" fill="none" strokeLinecap="round" /></svg>
             <span>Turn Off</span>
           </button>

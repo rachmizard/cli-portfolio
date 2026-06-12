@@ -12,14 +12,21 @@ interface TaskbarProps {
   onShowDesktop: () => void;
 }
 
-/** Windows flag (simplified XP-era logo) */
+/** Authentic XP-style four-color wavy Windows flag */
 function WinFlag() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" className="inline-block -mt-0.5">
-      <rect x="1" y="1" width="6" height="6" rx="1" fill="#fff" opacity="0.9" />
-      <rect x="9" y="1" width="6" height="6" rx="1" fill="#fff" opacity="0.7" />
-      <rect x="1" y="9" width="6" height="6" rx="1" fill="#fff" opacity="0.7" />
-      <rect x="9" y="9" width="6" height="6" rx="1" fill="#fff" opacity="0.9" />
+    <svg width="18" height="18" viewBox="0 0 24 24" className="inline-block -mt-0.5 drop-shadow-sm">
+      <defs>
+        <clipPath id="xpflag">
+          <path d="M2 5C6 3.5 10 3.5 14 5C18 6.5 21 6.5 22 6V18C20 18.8 17 18.5 14 17.3C10 15.8 6 15.8 2 17.3Z" />
+        </clipPath>
+      </defs>
+      <g clipPath="url(#xpflag)" transform="rotate(-8 12 11)">
+        <rect x="1" y="2" width="10.5" height="8" fill="#f24f4f" />
+        <rect x="12.5" y="2" width="11" height="8" fill="#6fbf3f" />
+        <rect x="1" y="11" width="10.5" height="9" fill="#3b8fe0" />
+        <rect x="12.5" y="11" width="11" height="9" fill="#f6c23e" />
+      </g>
     </svg>
   );
 }

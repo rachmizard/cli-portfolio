@@ -3,6 +3,8 @@ import Desktop from "./components/Desktop";
 import Taskbar from "./components/Taskbar";
 import StartMenu from "./components/StartMenu";
 import DisplayProperties from "./components/DisplayProperties";
+import ShutdownScreen from "./components/ShutdownScreen";
+import BootScreen from "./components/BootScreen";
 import { WELCOME_CONTENT } from "./content";
 import { useWallpaper } from "./useWallpaper";
 import { resolveCss } from "./wallpapers";
@@ -13,6 +15,8 @@ function App() {
   const [nextZ, setNextZ] = useState(1);
   const [activeId, setActiveId] = useState<string>("welcome");
   const [startMenuOpen, setStartMenuOpen] = useState(false);
+  const [shuttingDown, setShuttingDown] = useState(false);
+  const [booting, setBooting] = useState(true);
   const { wallpaper, setWallpaper } = useWallpaper();
 
   useEffect(() => {
@@ -108,6 +112,7 @@ function App() {
 
   return (
     <div className="h-full flex flex-col">
+      {booting && <BootScreen onComplete={() => setBooting(false)} />}
       <Desktop
         windows={windows}
         activeId={activeId}
@@ -132,7 +137,12 @@ function App() {
         visible={startMenuOpen}
         onClose={() => setStartMenuOpen(false)}
         onOpenWindow={openWindow}
+        onTurnOff={() => {
+          setStartMenuOpen(false);
+          setShuttingDown(true);
+        }}
       />
+      {shuttingDown && <ShutdownScreen onComplete={() => {}} />}
     </div>
   );
 }

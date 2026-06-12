@@ -51,11 +51,11 @@ html, body, #root {
 
 body {
   font-family: var(--font-body);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--color-on-surface);
   background-color: var(--color-surface);
-  -webkit-font-smoothing: none;
-  -moz-osx-font-smoothing: unset;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ── Bevel effects ── */
@@ -99,11 +99,11 @@ body {
 }
 .desktop-icon-text {
   font-family: var(--font-body);
-  font-size: 11px;
+  font-size: 12px;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
   color: #ffffff;
   text-align: center;
-  line-height: 1.1;
+  line-height: 1.15;
   padding: 1px 3px;
 }
 .desktop-icon:focus .desktop-icon-text,
@@ -141,7 +141,7 @@ body {
   text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
   font-family: var(--font-body);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 14px;
   font-style: italic;
   letter-spacing: 0.5px;
   border-radius: 0 8px 8px 0;
@@ -160,7 +160,7 @@ body {
 /* ── Taskbar Window Buttons ── */
 .task-btn {
   font-family: var(--font-body);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
   padding: 2px 8px;
   transition: none;
@@ -210,7 +210,7 @@ body {
   border-left: 1px solid #1a4cc7;
   padding: 2px 6px;
   font-family: var(--font-body);
-  font-size: 11px;
+  font-size: 12px;
   color: #ffffff;
 }
 
@@ -238,7 +238,7 @@ body {
   color: var(--color-on-primary);
   font-family: var(--font-body);
   font-weight: 700;
-  font-size: 12px;
+  font-size: 13px;
   padding: 4px 6px;
   border-radius: 7px 7px 0 0;
   text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
@@ -326,8 +326,8 @@ body {
 }
 .start-item {
   font-family: var(--font-body);
-  font-size: 11px;
-  padding: 5px 10px;
+  font-size: 12px;
+  padding: 6px 10px;
   color: #000;
 }
 .start-item:hover {
@@ -353,7 +353,7 @@ body {
   background: linear-gradient(180deg, #4a91e2 0%, #2f7ae8 40%, #1c5fd6 100%);
   border-top: 2px solid #ec8a00;
   box-shadow: inset 0 2px 0 #f8b042;
-  font-size: 11px;
+  font-size: 12px;
 }
 .start-footer button {
   font-family: var(--font-body);
@@ -408,6 +408,53 @@ body {
 .wa-scrollbar::-webkit-scrollbar { width: 8px; }
 .wa-scrollbar::-webkit-scrollbar-track { background: #0a0a12; }
 .wa-scrollbar::-webkit-scrollbar-thumb { background: #3a3a5e; border: 1px solid #5a5a7e; }
+
+/* ── Shutdown spinner (XP-style spinning dots) ── */
+.shutdown-spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgba(255,255,255,0.25);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: shutdown-spin 0.8s linear infinite;
+}
+@keyframes shutdown-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Boot progress bar (XP sliding blocks) ── */
+.boot-progress {
+  width: 180px;
+  height: 16px;
+  border: 2px solid #4a4a4a;
+  border-radius: 8px;
+  padding: 2px;
+  overflow: hidden;
+  position: relative;
+}
+.boot-progress-blocks {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  height: 10px;
+  width: 60px;
+  display: flex;
+  gap: 3px;
+  animation: boot-slide 2s linear infinite;
+}
+.boot-progress-blocks::before,
+.boot-progress-blocks::after {
+  content: "";
+  width: 11px;
+  height: 10px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #7ab8f5 0%, #2f7ae8 50%, #1c5fd6 100%);
+  box-shadow: 13px 0 0 #3b8fe0, 26px 0 0 #2f7ae8;
+}
+@keyframes boot-slide {
+  from { left: -60px; }
+  to { left: 180px; }
+}
 
 /* ── Mobile Responsive ── */
 @media (max-width: 768px) {

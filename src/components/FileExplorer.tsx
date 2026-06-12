@@ -44,7 +44,7 @@ function FileExplorer() {
   };
 
   return (
-    <div className="flex flex-col h-full font-body text-[11px] select-none">
+    <div className="flex flex-col h-full font-body text-[12px] select-none">
       {/* Menu Bar */}
       <div className="flex items-center bg-surface-container-low border-b border-outline-variant px-1 py-[2px] gap-0">
         {["File", "Edit", "View", "Favorites", "Tools", "Help"].map((m) => (
@@ -101,23 +101,23 @@ function FileExplorer() {
       {/* Main area: Sidebar + File List */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left Sidebar — Folder Tree */}
-        <div className="w-[180px] min-w-[140px] border-r border-outline-variant bg-white overflow-y-auto p-1 explorer-sidebar">
-          <div className="text-[10px] font-bold text-outline px-1 py-[2px]">Folders</div>
+        <div className="w-[180px] min-w-[140px] border-r border-outline-variant bg-white overflow-y-auto p-2 explorer-sidebar">
+          <div className="text-[11px] font-bold text-outline px-1 py-[3px]">Folders</div>
           {folderTree.map((folder, i) => (
             <div key={i}>
               <button
-                className={`flex items-center gap-1 w-full text-left px-1 py-[1px] hover:bg-primary hover:text-on-primary ${
+                className={`flex items-center gap-1.5 w-full text-left px-1 py-[3px] hover:bg-primary hover:text-on-primary ${
                   folder.name === "My Documents" ? "font-bold" : ""
                 }`}
               >
                 <folder.icon />
-                <span className="truncate text-[11px]">{folder.name}</span>
+                <span className="truncate text-[12px]">{folder.name}</span>
               </button>
               {folder.children.map((child, j) => (
                 <button
                   key={j}
                   onClick={() => setSelectedFolder(child.name)}
-                  className={`flex items-center gap-1 w-full text-left pl-5 py-[1px] text-[11px] ${
+                  className={`flex items-center gap-1.5 w-full text-left pl-6 py-[3px] text-[12px] ${
                     selectedFolder === child.name
                       ? "bg-primary text-on-primary"
                       : "hover:bg-primary hover:text-on-primary"
@@ -179,7 +179,7 @@ function FileExplorer() {
                     window.open("/cv.pdf", "_blank");
                   }
                 }}
-                className={`flex items-center w-full text-left px-2 py-[3px] text-[11px] border-b border-outline-variant/30 ${
+                className={`flex items-center w-full text-left px-3 py-[5px] text-[12px] border-b border-outline-variant/30 ${
                   isSelected
                     ? "bg-primary text-on-primary"
                     : "hover:bg-surface-container-low"
@@ -187,7 +187,7 @@ function FileExplorer() {
               >
                 {viewMode === "details" ? (
                   <>
-                    <div className="flex items-center gap-1 flex-1">
+                    <div className="flex items-center gap-2 flex-1">
                       <FileIcon />
                       <span className={isSelected ? "text-on-primary" : "text-on-surface"}>
                         {project.name}
@@ -202,7 +202,7 @@ function FileExplorer() {
                     </span>
                   </>
                 ) : (
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <FileIcon />
                     <span className={isSelected ? "text-on-primary" : "text-on-surface"}>
                       {project.name}
