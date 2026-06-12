@@ -1,8 +1,76 @@
 /** Windows XP-style SVG icons — pixel art, size-configurable */
 
+import { useId } from "react";
+import { XP } from "../theme";
+
 interface IconProps {
   size?: number;
 }
+
+/** XP four-color flag — rounded-rect variant (boot/shutdown splash) */
+export const IconXPFlag = ({ size = 64 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" className="drop-shadow-lg">
+    <g transform="rotate(-8 12 11)">
+      <rect x="1" y="2" width="10.5" height="8" rx="1" fill={XP.flagRed} />
+      <rect x="12.5" y="2" width="11" height="8" rx="1" fill={XP.flagGreen} />
+      <rect x="1" y="11" width="10.5" height="9" rx="1" fill={XP.flagBlue} />
+      <rect x="12.5" y="11" width="11" height="9" rx="1" fill={XP.flagYellow} />
+    </g>
+  </svg>
+);
+
+/** XP four-color flag — wavy clipped variant (start button) */
+export const IconXPFlagWave = ({ size = 18 }: IconProps) => {
+  const clip = useId();
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" className="inline-block -mt-0.5 drop-shadow-sm">
+      <defs>
+        <clipPath id={clip}>
+          <path d="M2 5C6 3.5 10 3.5 14 5C18 6.5 21 6.5 22 6V18C20 18.8 17 18.5 14 17.3C10 15.8 6 15.8 2 17.3Z" />
+        </clipPath>
+      </defs>
+      <g clipPath={`url(#${clip})`} transform="rotate(-8 12 11)">
+        <rect x="1" y="2" width="10.5" height="8" fill={XP.flagRed} />
+        <rect x="12.5" y="2" width="11" height="8" fill={XP.flagGreen} />
+        <rect x="1" y="11" width="10.5" height="9" fill={XP.flagBlue} />
+        <rect x="12.5" y="11" width="11" height="9" fill={XP.flagYellow} />
+      </g>
+    </svg>
+  );
+};
+
+/** System tray volume speaker */
+export const IconVolume = ({ size = 14 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 16 16">
+    <path d="M2 6H5L9 3V13L5 10H2Z" fill="#fff" />
+    <path d="M11 5C12.5 6.5 12.5 9.5 11 11M12.5 3C15 5.5 15 10.5 12.5 13" stroke="#fff" strokeWidth="1" fill="none" strokeLinecap="round" />
+  </svg>
+);
+
+/** Quick-launch "show desktop" */
+export const IconShowDesktop = ({ size = 14 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 16 16">
+    <rect x="1" y="1" width="14" height="14" rx="1" fill="#d9b441" stroke="#9a7a20" strokeWidth="0.6" />
+    <path d="M8 4L11 7H9V11H7V7H5Z" fill="#fff" transform="rotate(180 8 7.5)" />
+    <rect x="3" y="11" width="10" height="1.5" fill="#fff" />
+  </svg>
+);
+
+/** Start menu footer — log off (amber clock) */
+export const IconLogOff = ({ size = 20 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 20 20">
+    <circle cx="10" cy="10" r="9" fill={XP.amber} stroke="#fff" strokeWidth="1" />
+    <path d="M10 5V10L13 12" stroke="#fff" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+  </svg>
+);
+
+/** Start menu footer — turn off (red power) */
+export const IconTurnOff = ({ size = 20 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 20 20">
+    <circle cx="10" cy="10" r="9" fill={XP.red} stroke="#fff" strokeWidth="1" />
+    <path d="M10 4V10M6 6.5C4.5 8 4.5 12 7 13.5C9 14.7 11 14.7 13 13.5C15.5 12 15.5 8 14 6.5" stroke="#fff" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+  </svg>
+);
 
 export const IconMyComputer = ({ size = 32 }: IconProps) => (
   <svg width={size} height={size} viewBox="0 0 32 32" fill="none">

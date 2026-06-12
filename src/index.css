@@ -422,6 +422,22 @@ body {
   to { transform: rotate(360deg); }
 }
 
+/* ── Smadav splash ── */
+.smadav-word {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-style: italic;
+  font-size: 52px;
+  line-height: 1;
+  color: #ffffff;
+  text-shadow: 2px 2px 2px rgba(0,0,0,0.35);
+}
+.smadav-blocks::before,
+.smadav-blocks::after {
+  background: linear-gradient(180deg, #8ef0a0 0%, #2fae4d 50%, #1c8a39 100%) !important;
+  box-shadow: 13px 0 0 #3fc55f, 26px 0 0 #2fae4d !important;
+}
+
 /* ── Boot progress bar (XP sliding blocks) ── */
 .boot-progress {
   width: 180px;

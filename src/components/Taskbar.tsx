@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import type { AppWindow } from "../types";
-import { AppIcon } from "./Icons";
+import { AppIcon, IconXPFlagWave, IconVolume, IconShowDesktop } from "./Icons";
 
 interface TaskbarProps {
   windows: AppWindow[];
@@ -10,34 +10,6 @@ interface TaskbarProps {
   onToggleMinimize: (id: string) => void;
   onToggleStartMenu: () => void;
   onShowDesktop: () => void;
-}
-
-/** Authentic XP-style four-color wavy Windows flag */
-function WinFlag() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" className="inline-block -mt-0.5 drop-shadow-sm">
-      <defs>
-        <clipPath id="xpflag">
-          <path d="M2 5C6 3.5 10 3.5 14 5C18 6.5 21 6.5 22 6V18C20 18.8 17 18.5 14 17.3C10 15.8 6 15.8 2 17.3Z" />
-        </clipPath>
-      </defs>
-      <g clipPath="url(#xpflag)" transform="rotate(-8 12 11)">
-        <rect x="1" y="2" width="10.5" height="8" fill="#f24f4f" />
-        <rect x="12.5" y="2" width="11" height="8" fill="#6fbf3f" />
-        <rect x="1" y="11" width="10.5" height="9" fill="#3b8fe0" />
-        <rect x="12.5" y="11" width="11" height="9" fill="#f6c23e" />
-      </g>
-    </svg>
-  );
-}
-
-function IconVolume() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 16 16">
-      <path d="M2 6H5L9 3V13L5 10H2Z" fill="#fff" />
-      <path d="M11 5C12.5 6.5 12.5 9.5 11 11M12.5 3C15 5.5 15 10.5 12.5 13" stroke="#fff" strokeWidth="1" fill="none" strokeLinecap="round" />
-    </svg>
-  );
 }
 
 function Taskbar({ windows, activeId, startMenuOpen, onFocusWindow, onToggleMinimize, onToggleStartMenu, onShowDesktop }: TaskbarProps) {
@@ -77,7 +49,7 @@ function Taskbar({ windows, activeId, startMenuOpen, onFocusWindow, onToggleMini
           startMenuOpen ? "pressed" : ""
         }`}
       >
-        <WinFlag />
+        <IconXPFlagWave size={18} />
         <span>start</span>
       </button>
 
@@ -86,11 +58,7 @@ function Taskbar({ windows, activeId, startMenuOpen, onFocusWindow, onToggleMini
       {/* Quick Launch */}
       <div className="quick-launch flex items-center px-1 shrink-0">
         <button onClick={onShowDesktop} title="Show Desktop" className="ql-btn flex items-center justify-center">
-          <svg width="14" height="14" viewBox="0 0 16 16">
-            <rect x="1" y="1" width="14" height="14" rx="1" fill="#d9b441" stroke="#9a7a20" strokeWidth="0.6" />
-            <path d="M8 4L11 7H9V11H7V7H5Z" fill="#fff" transform="rotate(180 8 7.5)" />
-            <rect x="3" y="11" width="10" height="1.5" fill="#fff" />
-          </svg>
+          <IconShowDesktop size={14} />
         </button>
       </div>
 

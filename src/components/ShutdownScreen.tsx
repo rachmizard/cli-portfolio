@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { IconXPFlag } from "./Icons";
+import { playSound } from "../lib/sound";
 
 interface ShutdownScreenProps {
   onComplete: () => void;
@@ -9,8 +11,7 @@ function ShutdownScreen({ onComplete }: ShutdownScreenProps) {
   const [phase, setPhase] = useState<"shutting" | "off">("shutting");
 
   useEffect(() => {
-    const audio = new Audio("/xp-shutdown.mp3");
-    audio.play().catch(() => {});
+    const audio = playSound("/xp-shutdown.mp3");
 
     const finish = () => {
       // try to close the tab — only works if opened by script, otherwise blocked
@@ -43,14 +44,7 @@ function ShutdownScreen({ onComplete }: ShutdownScreenProps) {
       <div className="flex flex-col items-center gap-6">
         {/* XP four-color flag + wordmark */}
         <div className="flex items-center gap-3">
-          <svg width="56" height="56" viewBox="0 0 24 24" className="drop-shadow-lg">
-            <g transform="rotate(-8 12 11)">
-              <rect x="1" y="2" width="10.5" height="8" rx="1" fill="#f24f4f" />
-              <rect x="12.5" y="2" width="11" height="8" rx="1" fill="#6fbf3f" />
-              <rect x="1" y="11" width="10.5" height="9" rx="1" fill="#3b8fe0" />
-              <rect x="12.5" y="11" width="11" height="9" rx="1" fill="#f6c23e" />
-            </g>
-          </svg>
+          <IconXPFlag size={56} />
           <div className="leading-none">
             <div className="text-white text-[13px] font-body">Microsoft</div>
             <div className="text-white text-[34px] font-bold font-body italic -mt-1">

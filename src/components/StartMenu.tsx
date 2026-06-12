@@ -1,5 +1,6 @@
-import { IconTerminal, IconFolder, IconDocument, IconInfo, IconWinamp, IconPDF, IconMyComputer, IconUser } from "./Icons";
+import { IconTerminal, IconFolder, IconDocument, IconInfo, IconWinamp, IconPDF, IconMyComputer, IconUser, IconLogOff, IconTurnOff } from "./Icons";
 import { WELCOME_CONTENT, PROJECTS_CONTENT, ABOUT_CONTENT, WINAMP_CONTENT, COMPUTER_CONTENT } from "../content";
+import { playSound } from "../lib/sound";
 
 interface StartMenuProps {
   visible: boolean;
@@ -42,11 +43,6 @@ function StartMenu({ visible, onClose, onOpenWindow, onTurnOff }: StartMenuProps
       onOpenWindow(item.id, item.title || item.label, item.iconKey, item.content);
     }
     onClose();
-  };
-
-  const playSound = (src: string) => {
-    const audio = new Audio(src);
-    audio.play().catch(() => {});
   };
 
   const handleLogOff = () => {
@@ -101,11 +97,11 @@ function StartMenu({ visible, onClose, onOpenWindow, onTurnOff }: StartMenuProps
         {/* Footer — log off / turn off (green gradient) */}
         <div className="start-footer flex justify-end gap-3 px-3 py-1.5">
           <button onClick={handleLogOff} className="flex items-center gap-1.5 hover:underline text-white">
-            <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="#e8a33d" stroke="#fff" strokeWidth="1" /><path d="M10 5V10L13 12" stroke="#fff" strokeWidth="1.5" fill="none" strokeLinecap="round" /></svg>
+            <IconLogOff size={20} />
             <span>Log Off</span>
           </button>
           <button onClick={handleTurnOff} className="flex items-center gap-1.5 hover:underline text-white">
-            <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="#cc3333" stroke="#fff" strokeWidth="1" /><path d="M10 4V10M6 6.5C4.5 8 4.5 12 7 13.5C9 14.7 11 14.7 13 13.5C15.5 12 15.5 8 14 6.5" stroke="#fff" strokeWidth="1.5" fill="none" strokeLinecap="round" /></svg>
+            <IconTurnOff size={20} />
             <span>Turn Off</span>
           </button>
         </div>

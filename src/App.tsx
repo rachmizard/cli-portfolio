@@ -5,6 +5,7 @@ import StartMenu from "./components/StartMenu";
 import DisplayProperties from "./components/DisplayProperties";
 import ShutdownScreen from "./components/ShutdownScreen";
 import BootScreen from "./components/BootScreen";
+import SmadavScreen from "./components/SmadavScreen";
 import { WELCOME_CONTENT } from "./content";
 import { useWallpaper } from "./useWallpaper";
 import { resolveCss } from "./wallpapers";
@@ -17,6 +18,7 @@ function App() {
   const [startMenuOpen, setStartMenuOpen] = useState(false);
   const [shuttingDown, setShuttingDown] = useState(false);
   const [booting, setBooting] = useState(true);
+  const [smadav, setSmadav] = useState(false);
   const { wallpaper, setWallpaper } = useWallpaper();
 
   useEffect(() => {
@@ -112,7 +114,8 @@ function App() {
 
   return (
     <div className="h-full flex flex-col">
-      {booting && <BootScreen onComplete={() => setBooting(false)} />}
+      {booting && <BootScreen onComplete={() => { setBooting(false); setSmadav(true); }} />}
+      {smadav && <SmadavScreen onComplete={() => setSmadav(false)} />}
       <Desktop
         windows={windows}
         activeId={activeId}
