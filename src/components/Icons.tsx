@@ -7,6 +7,19 @@ interface IconProps {
   size?: number;
 }
 
+/** Render a real Windows XP .ico from public/icons via <img>. */
+export const IcoIcon = ({ name, size = 32 }: { name: string; size?: number }) => (
+  <img
+    src={`/icons/${encodeURIComponent(name)}.ico`}
+    width={size}
+    height={size}
+    alt=""
+    draggable={false}
+    className="pointer-events-none select-none object-contain"
+    style={{ width: size, height: size }}
+  />
+);
+
 /** XP four-color flag — rounded-rect variant (boot/shutdown splash) */
 export const IconXPFlag = ({ size = 64 }: IconProps) => (
   <svg width={size} height={size} viewBox="0 0 24 24" className="drop-shadow-lg">
@@ -164,18 +177,23 @@ export const IconUser = ({ size = 32 }: IconProps) => (
   </svg>
 );
 
+/** Real-.ico desktop app icons (from public/icons) */
+export const IconMyComputerIco = ({ size = 32 }: IconProps) => <IcoIcon name="My Computer" size={size} />;
+export const IconFolderIco = ({ size = 32 }: IconProps) => <IcoIcon name="Folder Closed" size={size} />;
+export const IconTxtIco = ({ size = 32 }: IconProps) => <IcoIcon name="List File" size={size} />;
+
 /** Map app key -> icon component, used by Window title bars and taskbar buttons */
 export const APP_ICONS: Record<string, (p: IconProps) => JSX.Element> = {
-  about: IconDocument,
-  projects: IconFolder,
+  about: IconTxtIco,
+  projects: IconFolderIco,
   skills: IconTerminal,
   winamp: IconWinamp,
-  computer: IconMyComputer,
+  computer: IconMyComputerIco,
   recycle: IconRecycleBin,
   settings: IconSettings,
   terminal: IconTerminal,
   document: IconDocument,
-  folder: IconFolder,
+  folder: IconFolderIco,
 };
 
 export const AppIcon = ({ iconKey, size = 16 }: { iconKey: string; size?: number }) => {
