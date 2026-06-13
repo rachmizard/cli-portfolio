@@ -10,6 +10,7 @@ import SmadavScreen from "./components/SmadavScreen";
 import { WELCOME_CONTENT } from "./content";
 import { useWallpaper } from "./useWallpaper";
 import { resolveCss } from "./wallpapers";
+import { WindowManagerProvider } from "./windowContext";
 import type { AppWindow } from "./types";
 
 function App() {
@@ -116,6 +117,7 @@ function App() {
 
   return (
     <div className="h-full flex flex-col">
+      <WindowManagerProvider value={{ openWindow }}>
       {booting && <BootScreen onComplete={() => { setBooting(false); setWelcoming(true); }} />}
       {welcoming && <WelcomeScreen onComplete={() => { setWelcoming(false); setSmadav(true); }} />}
       {smadav && <SmadavScreen onComplete={() => setSmadav(false)} />}
@@ -149,6 +151,7 @@ function App() {
         }}
       />
       {shuttingDown && <ShutdownScreen onComplete={() => {}} />}
+      </WindowManagerProvider>
     </div>
   );
 }

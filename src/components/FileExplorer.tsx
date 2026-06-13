@@ -6,6 +6,9 @@ import {
   IconTaskRename, IconTaskMove, IconTaskCopy, IconTaskPublish, IconTaskShare,
   IconTaskEmail, IconTaskDelete, IconTaskNewFolder, IconTaskDetails,
 } from "./Icons";
+import { useWindowManager } from "../windowContext";
+import { PROJECTS } from "../projects";
+import ProjectWindow from "./ProjectWindow";
 
 type IconCmp = (p: { size?: number }) => JSX.Element;
 type EntryKind = "folder" | "file";
@@ -18,6 +21,7 @@ interface Entry {
   size?: number;
   modified: string;
   open?: () => void;
+  projectId?: string;
 }
 
 interface FolderDef {
@@ -53,7 +57,7 @@ const FS: Record<string, FolderDef> = {
       { name: "nexus-ui", kind: "folder", desc: "Component library with retro OS design tokens", modified: "6/10/2026 3:21 PM" },
       { name: "cli-portfolio", kind: "folder", desc: "This portfolio — Windows XP simulation on the web", modified: "6/11/2026 10:42 AM" },
       { name: "api-gateway", kind: "folder", desc: "GraphQL gateway aggregating 5 microservices", modified: "5/30/2026 11:08 AM" },
-      { name: "fintrack", kind: "folder", desc: "Personal finance tracker with Telegram bot", modified: "4/22/2026 6:55 PM" },
+      { name: "fintrack", kind: "folder", desc: "Personal finance tracker with Telegram bot", modified: "4/22/2026 6:55 PM", projectId: "fintrack" },
       { name: "maha-hr-v2", kind: "folder", desc: "HR attendance app with selfie verification", modified: "6/02/2026 9:40 AM" },
     ],
   },
@@ -95,6 +99,7 @@ function entryType(e: Entry): string {
 }
 
 function FileExplorer() {
+  const { openWindow } = useWindowManager();
   const [history, setHistory] = useState<string[]>(["projects"]);
   const [cursor, setCursor] = useState(0);
   const [viewMode, setViewMode] = useState<ViewMode>("tiles");
@@ -120,6 +125,16 @@ function FileExplorer() {
   const goUp = () => { if (folder.parent) navigate(folder.parent); };
 
   const openEntry = (e: Entry) => {
+    if (e.projectId && PROJECTS[e.projectId]) {
+      const project = PROJECTS[e.projectId];
+      openWindow(
+        `project-${project.id}`,
+        `${project.name} - Properties`,
+        "projects",
+        <ProjectWindow project={project} />,
+      );
+      return;
+    }
     if (e.open) { e.open(); return; }
     const target = FOLDER_BY_NAME[e.name];
     if (target) navigate(target);
