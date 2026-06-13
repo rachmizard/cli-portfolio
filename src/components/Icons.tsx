@@ -69,6 +69,31 @@ export const IconShowDesktop = ({ size = 14 }: IconProps) => (
   </svg>
 );
 
+/** Title-bar control glyphs — white on transparent, crisp at small sizes */
+export const IconMinimize = ({ size = 10 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 10 10">
+    <rect x="1" y="7" width="6" height="2" fill="#fff" />
+  </svg>
+);
+export const IconMaximize = ({ size = 10 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 10 10">
+    <rect x="1" y="1" width="8" height="8" fill="none" stroke="#fff" strokeWidth="1.5" />
+    <rect x="1" y="1" width="8" height="2.5" fill="#fff" />
+  </svg>
+);
+export const IconRestore = ({ size = 10 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 10 10">
+    <rect x="3" y="1" width="6" height="6" fill="none" stroke="#fff" strokeWidth="1.2" />
+    <rect x="1" y="3" width="6" height="6" fill="#3168d5" stroke="#fff" strokeWidth="1.2" />
+    <rect x="1" y="3" width="6" height="1.8" fill="#fff" />
+  </svg>
+);
+export const IconClose = ({ size = 10 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 10 10">
+    <path d="M1.5 1.5L8.5 8.5M8.5 1.5L1.5 8.5" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" />
+  </svg>
+);
+
 /** Start menu footer — log off (amber clock) */
 export const IconLogOff = ({ size = 20 }: IconProps) => (
   <svg width={size} height={size} viewBox="0 0 20 20">

@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback, useRef, type ReactNode, type MouseEvent, type TouchEvent } from "react";
-import { AppIcon } from "./Icons";
+import { useState, useEffect, useCallback, useRef, type ReactNode, type MouseEvent, type TouchEvent, type AnimationEvent } from "react";
+import { AppIcon, IconMinimize, IconMaximize, IconRestore, IconClose } from "./Icons";
 
 interface WindowProps {
   title: string;
@@ -28,9 +28,14 @@ const MIN_W = 220;
 const MIN_H = 140;
 const TASKBAR_H = 28;
 
+const REDUCED_MOTION =
+  typeof window !== "undefined" &&
+  window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
 function Window({ title, iconKey, children, zIndex, maximized, active, onFocus, onMinimize, onMaximize, onClose }: WindowProps) {
   const [rect, setRect] = useState<Rect>({ x: 80, y: 60, w: 420, h: 320 });
   const [interaction, setInteraction] = useState<"none" | "drag" | "resize">("none");
+  const [exiting, setExiting] = useState<"closing" | "minimizing" | null>(null);
   const interactionStart = useRef({ x: 0, y: 0 });
   const rectSnapshot = useRef<Rect>(rect);
   const resizeDir = useRef<ResizeDir>("se");
@@ -96,6 +101,21 @@ function Window({ title, iconKey, children, zIndex, maximized, active, onFocus, 
     },
   }), [startResize]);
 
+  // ── Exit transitions (close/minimize play locally, then notify parent) ──
+  const handleClose = useCallback(() => {
+    if (REDUCED_MOTION) { onClose(); return; }
+    setExiting("closing");
+  }, [onClose]);
+  const handleMinimize = useCallback(() => {
+    if (REDUCED_MOTION) { onMinimize(); return; }
+    setExiting("minimizing");
+  }, [onMinimize]);
+  const handleExitEnd = useCallback((e: AnimationEvent) => {
+    if (e.target !== e.currentTarget) return;
+    if (exiting === "closing") onClose();
+    else if (exiting === "minimizing") { setExiting(null); onMinimize(); }
+  }, [exiting, onClose, onMinimize]);
+
   // ── Global move listeners ──
   useEffect(() => {
     const onMouseMove = (e: globalThis.MouseEvent) => {
@@ -155,12 +175,15 @@ function Window({ title, iconKey, children, zIndex, maximized, active, onFocus, 
 
   const resizeZones: ResizeDir[] = ["n", "s", "e", "w", "ne", "nw", "se", "sw"];
 
+  const exitClass = exiting === "closing" ? "window-closing" : exiting === "minimizing" ? "window-minimizing" : "window-open";
+
   return (
     <div
-      className={`absolute window flex flex-col ${active ? "window-active" : "window-inactive"} ${maximized ? "" : "raised-bevel rounded-t-lg"}`}
+      className={`absolute window flex flex-col ${active ? "window-active" : "window-inactive"} ${maximized ? "" : "raised-bevel rounded-t-lg"} ${exitClass}`}
       style={winStyle as React.CSSProperties}
       onMouseDown={onFocus}
       onTouchStart={onFocus}
+      onAnimationEnd={handleExitEnd}
     >
       {/* Title Bar */}
       <div
@@ -175,9 +198,9 @@ function Window({ title, iconKey, children, zIndex, maximized, active, onFocus, 
           <span className="truncate mr-2">{title}</span>
         </div>
         <div className="flex gap-[2px] shrink-0">
-          <button onClick={(e) => { e.stopPropagation(); onMinimize(); }} className="title-bar-buttons bevel-out flex items-center justify-center text-on-surface leading-none" aria-label="Minimize">_</button>
-          <button onClick={(e) => { e.stopPropagation(); onMaximize(); }} className="title-bar-buttons bevel-out flex items-center justify-center text-on-surface leading-none" aria-label={maximized ? "Restore" : "Maximize"}>{maximized ? "❐" : "□"}</button>
-          <button onClick={(e) => { e.stopPropagation(); onClose(); }} className="title-bar-buttons bevel-out flex items-center justify-center title-bar-close leading-none font-bold" aria-label="Close">✕</button>
+          <button onClick={(e) => { e.stopPropagation(); handleMinimize(); }} data-tooltip="Minimize" className="title-bar-buttons bevel-out flex items-center justify-center text-on-surface leading-none" aria-label="Minimize"><IconMinimize /></button>
+          <button onClick={(e) => { e.stopPropagation(); onMaximize(); }} data-tooltip={maximized ? "Restore" : "Maximize"} className="title-bar-buttons bevel-out flex items-center justify-center text-on-surface leading-none" aria-label={maximized ? "Restore" : "Maximize"}>{maximized ? <IconRestore /> : <IconMaximize />}</button>
+          <button onClick={(e) => { e.stopPropagation(); handleClose(); }} data-tooltip="Close" className="title-bar-buttons bevel-out flex items-center justify-center title-bar-close leading-none font-bold" aria-label="Close"><IconClose /></button>
         </div>
       </div>
 

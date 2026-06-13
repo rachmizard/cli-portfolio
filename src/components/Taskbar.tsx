@@ -14,13 +14,23 @@ interface TaskbarProps {
 
 function Taskbar({ windows, activeId, startMenuOpen, onFocusWindow, onToggleMinimize, onToggleStartMenu, onShowDesktop }: TaskbarProps) {
   const [time, setTime] = useState("");
+  const [fullDate, setFullDate] = useState("");
 
   useEffect(() => {
     const update = () => {
+      const now = new Date();
       setTime(
-        new Date().toLocaleTimeString("en-US", {
+        now.toLocaleTimeString("en-US", {
           hour: "2-digit",
           minute: "2-digit",
+        }),
+      );
+      setFullDate(
+        now.toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
         }),
       );
     };
@@ -83,8 +93,8 @@ function Taskbar({ windows, activeId, startMenuOpen, onFocusWindow, onToggleMini
 
       {/* System Tray */}
       <div className="tray bevel-in flex items-center gap-2">
-        <IconVolume />
-        <span>{time}</span>
+        <span data-tooltip="Volume" className="flex items-center"><IconVolume /></span>
+        <span data-tooltip={fullDate}>{time}</span>
       </div>
     </div>
   );
