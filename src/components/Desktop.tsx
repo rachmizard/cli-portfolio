@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef, type ReactNode, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from "react";
 import Window from "./Window";
-import { WELCOME_CONTENT, PROJECTS_CONTENT, ABOUT_CONTENT, WINAMP_CONTENT, COMPUTER_CONTENT, RECYCLE_CONTENT } from "../content";
-import { IconTerminal, IconPDF, IconWinamp, IconRecycleBin, IconMyComputerIco, IconFolderIco, IconTxtIco } from "./Icons";
+import { WELCOME_CONTENT, PROJECTS_CONTENT, ABOUT_CONTENT, WINAMP_CONTENT, COMPUTER_CONTENT, RECYCLE_CONTENT, MINESWEEPER_CONTENT } from "../content";
+import { IconTerminal, IconPDF, IconWinamp, IconRecycleBin, IconMyComputerIco, IconFolderIco, IconTxtIco, IconMinesweeper } from "./Icons";
 import type { AppWindow } from "../types";
 
 interface DesktopIcon {
@@ -56,6 +56,7 @@ const DESKTOP_ICONS: DesktopIcon[] = [
   { id: "skills", title: "Skills.exe", Icon: IconTerminal, content: WELCOME_CONTENT, windowTitle: "Skills.exe - Command Prompt" },
   { id: "cv", title: "CV.pdf", Icon: IconPDF, content: null, windowTitle: "" },
   { id: "winamp", title: "Winamp", Icon: IconWinamp, content: null, windowTitle: "Winamp 2.91" },
+  { id: "minesweeper", title: "Minesweeper", Icon: IconMinesweeper, content: MINESWEEPER_CONTENT, windowTitle: "Minesweeper" },
   { id: "recycle", title: "Recycle Bin", Icon: IconRecycleBin, content: RECYCLE_CONTENT, windowTitle: "Recycle Bin" },
 ];
 

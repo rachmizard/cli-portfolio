@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import FileExplorer from "./components/FileExplorer";
 import Winamp from "./components/Winamp";
+import Minesweeper from "./components/Minesweeper";
 
 export const WELCOME_CONTENT: ReactNode = (
   <div className="p-4 space-y-4 font-mono text-[13px] leading-[18px]">
@@ -28,6 +29,8 @@ export const WELCOME_CONTENT: ReactNode = (
 export const PROJECTS_CONTENT: ReactNode = <FileExplorer />;
 
 export const WINAMP_CONTENT: ReactNode = <Winamp />;
+
+export const MINESWEEPER_CONTENT: ReactNode = <Minesweeper />;
 
 export const COMPUTER_CONTENT: ReactNode = (
   <div className="p-4 font-body text-[11px] space-y-3 h-full overflow-y-auto bg-white">

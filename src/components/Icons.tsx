@@ -184,6 +184,25 @@ export const IconWinamp = ({ size = 32 }: IconProps) => (
   </svg>
 );
 
+export const IconMinesweeper = ({ size = 32 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
+    {/* classic gray raised tile */}
+    <rect x="2" y="2" width="28" height="28" fill="#c0c0c0" />
+    <path d="M2 2H30V5H5V30H2Z" fill="#ffffff" />
+    <path d="M30 2V30H2V27H27V2Z" fill="#808080" />
+    {/* mine */}
+    <circle cx="16" cy="16" r="7" fill="#000000" />
+    <line x1="16" y1="5" x2="16" y2="27" stroke="#000000" strokeWidth="2" />
+    <line x1="5" y1="16" x2="27" y2="16" stroke="#000000" strokeWidth="2" />
+    <line x1="8.5" y1="8.5" x2="23.5" y2="23.5" stroke="#000000" strokeWidth="1.6" />
+    <line x1="23.5" y1="8.5" x2="8.5" y2="23.5" stroke="#000000" strokeWidth="1.6" />
+    <circle cx="13" cy="13" r="2" fill="#ffffff" />
+    {/* tiny red flag accent */}
+    <polygon points="20,6 25,7.5 20,9" fill="#f24f4f" />
+    <line x1="20" y1="6" x2="20" y2="11" stroke="#000000" strokeWidth="1" />
+  </svg>
+);
+
 export const IconRecycleBin = ({ size = 32 }: IconProps) => (
   <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
     {/* recycle arrows on lid */}
@@ -343,6 +362,7 @@ export const APP_ICONS: Record<string, (p: IconProps) => JSX.Element> = {
   projects: IconFolderIco,
   skills: IconTerminal,
   winamp: IconWinamp,
+  minesweeper: IconMinesweeper,
   computer: IconMyComputerIco,
   recycle: IconRecycleBin,
   settings: IconSettings,
