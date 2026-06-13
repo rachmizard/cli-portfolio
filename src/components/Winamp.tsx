@@ -4,6 +4,28 @@ import { useRecentlyPlayed } from "../useRecentlyPlayed";
 // ── Visualizer bars count ──
 const VIS_BARS = 19;
 
+// ── Authentic Winamp 2.9 palette ──
+const WA = {
+  black: "#000000",
+  chromeLight: "#c0c0c0",
+  chromeMid: "#808080",
+  chromeDark: "#3a3a3a",
+  chromeDarker: "#1a1a1a",
+  lcdGreen: "#00ff00",
+  lcdGreenDim: "#008000",
+  lcdGreenDark: "#004000",
+  lcdBg: "#000000",
+  btnFace: "#585858",
+  btnHighlight: "#808080",
+  btnShadow: "#2a2a2a",
+  btnText: "#c0c0c0",
+  sliderTrough: "#1a1a1a",
+  sliderFill: "#00ff00",
+  sliderThumb: "#808080",
+  titlebarBg: "#3a3a3a",
+  titlebarText: "#c0c0c0",
+} as const;
+
 // ── Component ──
 function Winamp() {
   // Playlist sourced from Spotify recently-played (with curated fallback)
@@ -160,12 +182,12 @@ function Winamp() {
     setCurrentTime(ratio * duration);
   }, [duration]);
 
-  // Volume
+  // Volume — HORIZONTAL slider (clientX-based)
   const handleVolume = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const audio = audioRef.current;
     if (!audio) return;
     const rect = e.currentTarget.getBoundingClientRect();
-    const ratio = 1 - Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
+    const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     audio.volume = ratio;
     setVolume(ratio);
   }, []);
@@ -179,9 +201,23 @@ function Winamp() {
 
   const hasPreview = !!currentTrack?.previewUrl;
 
+  // ── Spectrum bar color: green→yellow→red gradient ──
+  const barColor = (v: number) => {
+    if (v < 0.5) {
+      // green to yellow
+      const t = v / 0.5;
+      const r = Math.round(t * 255);
+      return `rgb(${r}, 255, 0)`;
+    }
+    // yellow to red
+    const t = (v - 0.5) / 0.5;
+    const g = Math.round((1 - t) * 255);
+    return `rgb(255, ${g}, 0)`;
+  };
+
   // ── Render ──
   return (
-    <div className="flex flex-col h-full bg-[#1a1a2e] select-none font-body text-[11px]">
+    <div className="wa-window flex flex-col h-full select-none font-body text-[11px]">
       {/* Hidden audio element */}
       <audio
         ref={audioRef}
@@ -192,41 +228,41 @@ function Winamp() {
       />
 
       {/* ═══ TITLE BAR ═══ */}
-      <div className="wa-titlebar-small flex items-center justify-between px-[3px] h-[14px] bg-gradient-to-b from-[#3a3a5e] to-[#1a1a2e] border-b border-[#0a0a1e] shrink-0">
-        <span className="text-[#a0a0c0] text-[8px] font-bold tracking-[0.5px]">WINAMP 2.91</span>
-        <span className="text-[#20ff60] text-[8px] font-mono">
+      <div className="wa-titlebar flex items-center justify-between px-[4px] h-[16px] shrink-0">
+        <span className="text-[#c0c0c0] text-[8px] font-bold tracking-[0.5px] font-body">WINAMP 2.91</span>
+        <span className="text-[#00ff00] text-[8px] font-mono" style={{ textShadow: "0 0 4px #00ff00" }}>
           {status === "live" ? "● spotify" : status === "loading" ? "○ syncing…" : "-rachmizard-"}
         </span>
       </div>
 
       {/* ═══ DISPLAY ═══ */}
-      <div className="mx-[3px] mt-[3px] bg-[#0a0a12] border border-[#3a3a5e] p-[3px_4px] flex flex-col gap-[2px] min-h-[67px]">
-        {/* Track info */}
-        <div className="flex justify-between items-center">
-          <span className="text-[#20ff60] text-[9px] font-mono font-bold tracking-[0.5px] truncate max-w-[160px]">
-            {currentTrack.artist} — {currentTrack.title}
+      <div className="wa-display mx-[2px] mt-[2px] p-[4px] flex flex-col gap-[1px] min-h-[68px]">
+        {/* Large time + track info row */}
+        <div className="flex justify-between items-baseline">
+          <span className="wa-lcd-time text-[#00ff00] text-[18px] font-mono font-bold leading-none" style={{ textShadow: "0 0 6px #00ff00" }}>
+            {hasPreview ? fmt(currentTime) : currentTrack.duration}
           </span>
-          <span className="text-[#20ff60] text-[8px] font-mono min-w-[55px] text-right">
-            {fmt(currentTime)} / {hasPreview ? fmt(duration || 0) : currentTrack.duration}
+          <span className="text-[#00ff00] text-[8px] font-mono truncate max-w-[55%] text-right" style={{ textShadow: "0 0 3px #008000" }}>
+            {currentTrack.artist} — {currentTrack.title}
           </span>
         </div>
         {/* Bitrate + stereo */}
-        <div className="text-[#20ff60] text-[7px] font-mono flex gap-2">
-          {hasPreview ? <span>128 kbps</span> : <span>no preview</span>}
-          <span>44 kHz</span>
-          <span className="opacity-40">mono</span>
-          <span className="drop-shadow-[0_0_3px_#20ff60]">stereo</span>
+        <div className="text-[#00ff00] text-[7px] font-mono flex gap-2 mt-px">
+          {hasPreview ? <span>128kbps</span> : <span style={{ color: "#008000" }}>no preview</span>}
+          <span>44kHz</span>
+          <span style={{ color: "#008000" }}>mono</span>
+          <span style={{ textShadow: "0 0 4px #00ff00" }}>stereo</span>
         </div>
         {/* Visualizer */}
         <div className="flex items-end gap-px h-[24px] mt-px">
           {visData.map((v, i) => (
             <div
               key={i}
-              className="flex-1 transition-all duration-[50ms]"
+              className="flex-1 transition-all duration-[50ms] rounded-[1px]"
               style={{
                 height: `${Math.max(2, v * 100)}%`,
-                backgroundColor: v > 0.7 ? "#ff4040" : "#20ff60",
-                opacity: 0.4 + v * 0.6,
+                backgroundColor: barColor(v),
+                opacity: 0.5 + v * 0.5,
               }}
             />
           ))}
@@ -235,38 +271,84 @@ function Winamp() {
 
       {/* ═══ SEEK BAR ═══ */}
       <div
-        className="mx-[3px] mt-[2px] h-[11px] bg-[#1a1a2e] border border-[#3a3a5e] flex items-center px-[2px] cursor-pointer"
+        className="wa-seek mx-[2px] mt-[2px] h-[10px] flex items-center px-[2px] cursor-pointer"
         onClick={handleSeek}
       >
-        <div className="flex-1 h-[5px] bg-[#2a2a3e] relative">
+        <div className="flex-1 h-[4px] relative" style={{ backgroundColor: WA.sliderTrough }}>
           <div
-            className="absolute left-0 top-0 bottom-0 bg-[#20ff60]"
-            style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
+            className="absolute left-0 top-0 bottom-0"
+            style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%`, backgroundColor: WA.lcdGreen }}
           />
           <div
-            className="absolute top-1/2 -translate-y-1/2 w-[10px] h-[10px] bg-[#3a3a5e] border border-[#6a6a8e]"
-            style={{ left: `calc(${duration ? (currentTime / duration) * 100 : 0}% - 5px)` }}
+            className="absolute top-1/2 -translate-y-1/2 w-[8px] h-[8px]"
+            style={{
+              left: `calc(${duration ? (currentTime / duration) * 100 : 0}% - 4px)`,
+              backgroundColor: WA.sliderThumb,
+              border: `1px solid ${WA.chromeLight}`,
+            }}
+          />
+        </div>
+      </div>
+
+      {/* ═══ VOL / BAL (horizontal) ═══ */}
+      <div className="flex items-center gap-[4px] mx-[2px] mt-[2px] h-[18px]">
+        <span className="text-[#00ff00] text-[7px] font-mono w-[22px] shrink-0" style={{ textShadow: "0 0 3px #008000" }}>VOL</span>
+        <div
+          className="wa-hslider flex-1 h-[10px] cursor-pointer relative"
+          onClick={handleVolume}
+        >
+          <div
+            className="absolute top-0 bottom-0 left-0"
+            style={{ width: `${volume * 100}%`, backgroundColor: WA.lcdGreen, opacity: 0.6 }}
+          />
+          <div
+            className="absolute top-1/2 -translate-y-1/2 w-[6px] h-[10px]"
+            style={{
+              left: `calc(${volume * 100}% - 3px)`,
+              backgroundColor: WA.sliderThumb,
+              border: `1px solid ${WA.chromeLight}`,
+            }}
+          />
+        </div>
+        <span className="text-[#00ff00] text-[7px] font-mono w-[22px] shrink-0" style={{ textShadow: "0 0 3px #008000" }}>BAL</span>
+        <div className="wa-hslider flex-1 h-[10px] relative">
+          <div
+            className="absolute top-0 bottom-0"
+            style={{
+              left: "calc(50% - 1px)",
+              width: "2px",
+              backgroundColor: WA.lcdGreen,
+              opacity: 0.4,
+            }}
+          />
+          <div
+            className="absolute top-1/2 -translate-y-1/2 w-[6px] h-[10px]"
+            style={{
+              left: "calc(50% - 3px)",
+              backgroundColor: WA.sliderThumb,
+              border: `1px solid ${WA.chromeLight}`,
+            }}
           />
         </div>
       </div>
 
       {/* ═══ TRANSPORT + CONTROLS ═══ */}
-      <div className="flex items-center gap-0 p-[2px_3px_3px_3px] bg-[#1a1a2e]">
+      <div className="flex items-center gap-[1px] p-[3px_4px_2px_4px]">
         {/* Transport buttons */}
-        <div className="flex gap-[2px] mr-[4px]">
-          <button onClick={prev} className="wa-btn" title="Previous Track">⏮</button>
-          <button
-            onClick={playing ? pause : play}
-            className={`wa-btn ${playing ? "" : "wa-btn-play"}`}
-            title={playing ? "Pause" : "Play"}
-            disabled={!hasPreview}
-          >
-            {playing ? "⏸" : "▶"}
-          </button>
-          <button onClick={stop} className="wa-btn" title="Stop" disabled={!hasPreview}>⏹</button>
-          <button onClick={next} className="wa-btn" title="Next Track">⏭</button>
-          <button onClick={stop} className="wa-btn wa-btn-eject text-[6px]" title="Eject">▲</button>
-        </div>
+        <button onClick={prev} className="wa-btn" title="Previous Track">⏮</button>
+        <button
+          onClick={playing ? pause : play}
+          className={`wa-btn ${playing ? "" : "wa-btn-play"}`}
+          title={playing ? "Pause" : "Play"}
+          disabled={!hasPreview}
+        >
+          {playing ? "⏸" : "▶"}
+        </button>
+        <button onClick={stop} className="wa-btn" title="Stop" disabled={!hasPreview}>⏹</button>
+        <button onClick={next} className="wa-btn" title="Next Track">⏭</button>
+        <button onClick={stop} className="wa-btn wa-btn-eject text-[6px]" title="Eject">▲</button>
+
+        <div className="flex-1" />
 
         {/* Shuffle / Repeat */}
         <button
@@ -283,38 +365,11 @@ function Winamp() {
         >
           REP
         </button>
-
-        {/* Volume + Balance sliders */}
-        <div className="flex gap-[6px] ml-auto items-center">
-          <div className="flex flex-col items-center gap-0">
-            <span className="text-[#20ff60] text-[6px] font-mono mb-px">VOL</span>
-            <div
-              className="w-[12px] h-[38px] bg-[#0a0a12] border border-[#3a3a5e] relative cursor-pointer"
-              onClick={handleVolume}
-            >
-              <div
-                className="absolute bottom-0 left-px right-px bg-[#20ff60] opacity-60"
-                style={{ height: `${volume * 100}%` }}
-              />
-              <div
-                className="absolute left-0 right-0 h-[4px] bg-[#3a3a5e] border border-[#6a6a8e]"
-                style={{ bottom: `calc(${volume * 100}% - 2px)` }}
-              />
-            </div>
-          </div>
-          <div className="flex flex-col items-center gap-0">
-            <span className="text-[#20ff60] text-[6px] font-mono mb-px">BAL</span>
-            <div className="w-[12px] h-[38px] bg-[#0a0a12] border border-[#3a3a5e] relative cursor-default">
-              <div className="absolute bottom-0 left-px right-px bg-[#20ff60] opacity-40" style={{ height: "50%" }} />
-              <div className="absolute left-0 right-0 h-[4px] bg-[#3a3a5e] border border-[#6a6a8e]" style={{ bottom: "calc(50% - 2px)" }} />
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* ═══ EQUALIZER ═══ */}
-      <div className="border-t border-[#3a3a5e] mt-[1px]">
-        <div className="wa-titlebar-small flex items-center px-[3px] h-[14px] bg-gradient-to-b from-[#3a3a5e] to-[#1a1a2e] text-[#a0a0c0] text-[8px] font-bold">
+      <div className="wa-eq-section">
+        <div className="wa-titlebar flex items-center px-[4px] h-[14px] text-[#c0c0c0] text-[8px] font-bold">
           EQUALIZER
         </div>
         <div className="flex gap-[2px] p-[4px_6px] items-end h-[72px]">
@@ -323,37 +378,47 @@ function Winamp() {
             const h = heights[i];
             return (
               <div key={i} className="flex flex-col items-center gap-px flex-1 h-full justify-end">
-                <div className="w-[12px] h-[48px] bg-[#0a0a12] border border-[#3a3a5e] relative">
-                  <div className="absolute bottom-0 left-px right-px bg-[#20ff60] opacity-40" style={{ height: `${h}%` }} />
-                  <div className="absolute left-0 right-0 h-[3px] bg-[#3a3a5e] border border-[#6a6a8e]" style={{ bottom: `calc(${h}% - 1.5px)` }} />
+                <div className="wa-eq-slider relative" style={{ height: "48px" }}>
+                  <div
+                    className="absolute bottom-0 left-px right-px"
+                    style={{ height: `${h}%`, backgroundColor: WA.lcdGreen, opacity: 0.4 }}
+                  />
+                  <div
+                    className="absolute left-0 right-0 h-[3px]"
+                    style={{
+                      bottom: `calc(${h}% - 1.5px)`,
+                      backgroundColor: WA.sliderThumb,
+                      border: `1px solid ${WA.chromeLight}`,
+                    }}
+                  />
                 </div>
-                <span className="text-[#20ff60] text-[6px] font-mono">{hz}</span>
+                <span className="text-[#00ff00] text-[6px] font-mono">{hz}</span>
               </div>
             );
           })}
         </div>
         <div className="flex items-center gap-[4px] mx-[6px] mb-[4px]">
-          <button className="h-[16px] px-[6px] bg-[#2a2a4e] border border-[#5a5a7e] text-[#20ff60] text-[7px] cursor-pointer">Presets</button>
-          <span className="text-[#20ff60] text-[7px]">Rock</span>
+          <button className="wa-pl-btn">Presets</button>
+          <span className="text-[#00ff00] text-[7px] font-mono" style={{ textShadow: "0 0 3px #008000" }}>Rock</span>
         </div>
       </div>
 
       {/* ═══ PLAYLIST ═══ */}
-      <div className="border-t border-[#3a3a5e] flex-1 flex flex-col min-h-0">
-        <div className="wa-titlebar-small flex items-center px-[3px] h-[14px] bg-gradient-to-b from-[#3a3a5e] to-[#1a1a2e] text-[#a0a0c0] text-[8px] font-bold shrink-0">
+      <div className="wa-pl-section flex-1 flex flex-col min-h-0">
+        <div className="wa-titlebar flex items-center px-[4px] h-[14px] text-[#c0c0c0] text-[8px] font-bold shrink-0">
           PLAYLIST
         </div>
-        <div className="flex-1 overflow-y-auto bg-[#0a0a12] mx-[3px] my-[2px] border border-[#3a3a5e] p-[2px] font-mono text-[8px] text-[#20ff60] wa-scrollbar">
+        <div className="wa-pl-list wa-scrollbar flex-1 overflow-y-auto mx-[2px] my-[2px] p-[2px] font-mono text-[8px] text-[#00ff00]">
           {playlist.map((track, i) => (
             <div
               key={track.id}
               onClick={() => { setCurrentIdx(i); setPlaying(false); }}
               onDoubleClick={() => { if (track.spotifyUrl) window.open(track.spotifyUrl, "_blank"); }}
               title={track.spotifyUrl ? "Double-click to open in Spotify" : undefined}
-              className={`px-[4px] py-px whitespace-nowrap cursor-pointer ${
+              className={`wa-pl-row px-[4px] py-px whitespace-nowrap cursor-pointer ${
                 i === currentIdx
-                  ? "bg-[#20ff60] text-[#0a0a12]"
-                  : "hover:bg-[#1a3a1e]"
+                  ? "wa-pl-active"
+                  : "wa-pl-row-inactive"
               }`}
             >
               {String(i + 1).padStart(2, " ")}. {track.artist} — {track.title}
@@ -361,7 +426,7 @@ function Winamp() {
             </div>
           ))}
         </div>
-        <div className="text-[#20ff60] text-[8px] text-right px-[6px] pb-[2px] font-mono">
+        <div className="text-[#00ff00] text-[8px] text-right px-[6px] pb-[2px] font-mono" style={{ textShadow: "0 0 3px #008000" }}>
           {playlist.length} tracks — {status === "live" ? "recently played on Spotify" : "curated"}
         </div>
         <div className="flex gap-[3px] p-[2px_3px_3px_3px]">

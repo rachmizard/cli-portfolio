@@ -668,16 +668,48 @@ body {
   border-color: rgba(49, 104, 213, 0.6);
 }
 
-/* ── Winamp ── */
-.wa-titlebar-small {
-  font-family: var(--font-body);
+/* ── Winamp 2.9x authentic base skin ── */
+.wa-window {
+  background: #000000;
+  color: #c0c0c0;
+  border: 1px solid #3a3a3a;
+  box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #1a1a1a;
+}
+.wa-titlebar {
+  background: linear-gradient(180deg, #585858 0%, #3a3a3a 40%, #2a2a2a 100%);
+  border-bottom: 1px solid #1a1a1a;
+  box-shadow: inset 0 1px 0 #808080;
+  font-family: Tahoma, sans-serif;
+}
+.wa-display {
+  background: #000000;
+  border: 1px solid #3a3a3a;
+  box-shadow: inset 1px 1px 0 #1a1a1a, inset -1px -1px 0 #585858;
+}
+.wa-lcd-time {
+  font-family: "Courier Prime", "Courier New", monospace;
+  letter-spacing: 1px;
+}
+.wa-seek {
+  background: #1a1a1a;
+  border: 1px solid #3a3a3a;
+  box-shadow: inset 1px 1px 0 #1a1a1a;
+}
+.wa-hslider {
+  background: #1a1a1a;
+  border: 1px solid #3a3a3a;
+  box-shadow: inset 1px 1px 0 #000000;
 }
 .wa-btn {
   width: 23px;
   height: 18px;
-  background: linear-gradient(180deg, #4a4a6e 0%, #2a2a4e 40%, #2a2a4e 60%, #1a1a3e 100%);
-  border: 1px solid #5a5a7e;
-  color: #a0a0c0;
+  background: linear-gradient(180deg, #808080 0%, #585858 40%, #4a4a4a 60%, #3a3a3a 100%);
+  border: 1px solid #808080;
+  border-top-color: #a0a0a0;
+  border-left-color: #a0a0a0;
+  border-bottom-color: #2a2a2a;
+  border-right-color: #2a2a2a;
+  color: #c0c0c0;
   font-size: 9px;
   display: flex;
   align-items: center;
@@ -686,37 +718,78 @@ body {
   font-family: Tahoma, sans-serif;
 }
 .wa-btn:active {
-  background: linear-gradient(180deg, #1a1a3e 0%, #2a2a4e 100%);
-  border-color: #3a3a5e;
+  background: linear-gradient(180deg, #3a3a3a 0%, #4a4a4a 100%);
+  border-top-color: #2a2a2a;
+  border-left-color: #2a2a2a;
+  border-bottom-color: #808080;
+  border-right-color: #808080;
 }
 .wa-btn:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: default;
 }
 .wa-btn-play {
   background: linear-gradient(180deg, #5a8a3e 0%, #3a6a2e 40%, #2a5a1e 60%, #1a4a0e 100%);
   border-color: #6a9a5e;
+  border-top-color: #7aaa6e;
+  border-left-color: #7aaa6e;
+  border-bottom-color: #1a3a0e;
+  border-right-color: #1a3a0e;
 }
 .wa-toggle-on {
-  color: #20ff60;
-  text-shadow: 0 0 4px #20ff60;
+  color: #00ff00;
+  text-shadow: 0 0 4px #00ff00;
+}
+.wa-eq-section {
+  border-top: 1px solid #3a3a3a;
+  margin-top: 1px;
+}
+.wa-eq-slider {
+  width: 12px;
+  background: #000000;
+  border: 1px solid #3a3a3a;
+  box-shadow: inset 1px 1px 0 #1a1a1a;
+}
+.wa-pl-section {
+  border-top: 1px solid #3a3a3a;
+}
+.wa-pl-list {
+  background: #000000;
+  border: 1px solid #3a3a3a;
+  box-shadow: inset 1px 1px 0 #1a1a1a;
+}
+.wa-pl-row-inactive:hover {
+  background: #1a3a1e;
+}
+.wa-pl-active {
+  background: #00ff00;
+  color: #000000;
+  text-shadow: none;
 }
 .wa-pl-btn {
   height: 18px;
   padding: 0 8px;
-  background: linear-gradient(180deg, #4a4a6e 0%, #2a2a4e 50%, #1a1a3e 100%);
-  border: 1px solid #5a5a7e;
-  color: #a0a0c0;
+  background: linear-gradient(180deg, #808080 0%, #585858 50%, #3a3a3a 100%);
+  border: 1px solid #808080;
+  border-top-color: #a0a0a0;
+  border-left-color: #a0a0a0;
+  border-bottom-color: #2a2a2a;
+  border-right-color: #2a2a2a;
+  color: #c0c0c0;
   font-size: 7px;
   cursor: pointer;
   font-family: Tahoma, sans-serif;
 }
 .wa-pl-btn:active {
-  background: linear-gradient(180deg, #1a1a3e 0%, #2a2a4e 100%);
+  background: linear-gradient(180deg, #3a3a3a 0%, #4a4a4a 100%);
+  border-top-color: #2a2a2a;
+  border-left-color: #2a2a2a;
+  border-bottom-color: #808080;
+  border-right-color: #808080;
 }
 .wa-scrollbar::-webkit-scrollbar { width: 8px; }
-.wa-scrollbar::-webkit-scrollbar-track { background: #0a0a12; }
-.wa-scrollbar::-webkit-scrollbar-thumb { background: #3a3a5e; border: 1px solid #5a5a7e; }
+.wa-scrollbar::-webkit-scrollbar-track { background: #000000; }
+.wa-scrollbar::-webkit-scrollbar-thumb { background: #3a3a3a; border: 1px solid #585858; }
 
 /* ── Shutdown spinner (XP-style spinning dots) ── */
 .shutdown-spinner {
