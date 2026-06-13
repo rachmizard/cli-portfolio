@@ -44,6 +44,7 @@ function App() {
     title: string,
     icon: string,
     content: React.ReactNode,
+    initialRect?: AppWindow["initialRect"],
   ) => {
     setWindows((prev) => {
       const existing = prev.find((w) => w.id === id);
@@ -56,7 +57,7 @@ function App() {
       }
       return [
         ...prev,
-        { id, title, icon, content, minimized: false, maximized: false, zIndex: nextZ },
+        { id, title, icon, content, minimized: false, maximized: false, zIndex: nextZ, initialRect },
       ];
     });
     setActiveId(id);

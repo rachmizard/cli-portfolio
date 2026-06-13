@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import FileExplorer from "./components/FileExplorer";
 import Winamp from "./components/Winamp";
 import Minesweeper from "./components/Minesweeper";
+import WordWindow from "./components/WordWindow";
 
 export const WELCOME_CONTENT: ReactNode = (
   <div className="p-4 space-y-4 font-mono text-[13px] leading-[18px]">
@@ -31,6 +32,8 @@ export const PROJECTS_CONTENT: ReactNode = <FileExplorer />;
 export const WINAMP_CONTENT: ReactNode = <Winamp />;
 
 export const MINESWEEPER_CONTENT: ReactNode = <Minesweeper />;
+
+export const WORD_CONTENT: ReactNode = <WordWindow />;
 
 export const COMPUTER_CONTENT: ReactNode = (
   <div className="p-4 font-body text-[11px] space-y-3 h-full overflow-y-auto bg-white">
@@ -64,7 +67,7 @@ export const RECYCLE_CONTENT: ReactNode = (
 export const ABOUT_CONTENT: ReactNode = (
   <div className="p-4 font-mono text-[13px] leading-[18px] space-y-3">
     <div className="bevel-in bg-surface-container-lowest p-3">
-      <p className="text-secondary font-bold mb-1">C:\Users\rachmizard\Documents\resume.txt</p>
+      <p className="text-secondary font-bold mb-1">C:\Users\rachmizard\Documents\CV.doc</p>
       <div className="space-y-2">
         <p><span className="text-tertiary">Name:</span> <span className="text-on-surface">Rachmizard</span></p>
         <p><span className="text-tertiary">Role:</span> <span className="text-on-surface">Senior Full-Stack Developer</span></p>

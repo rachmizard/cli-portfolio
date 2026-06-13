@@ -8,4 +8,5 @@ export interface AppWindow {
   minimized: boolean;
   maximized: boolean;
   zIndex: number;
+  initialRect?: { x?: number; y?: number; w: number; h: number };
 }

@@ -12,6 +12,7 @@ interface WindowProps {
   onMinimize: () => void;
   onMaximize: () => void;
   onClose: () => void;
+  initialRect?: { x?: number; y?: number; w: number; h: number };
 }
 
 interface Rect {
@@ -32,7 +33,7 @@ const REDUCED_MOTION =
   typeof window !== "undefined" &&
   window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
-function Window({ title, iconKey, children, zIndex, maximized, active, onFocus, onMinimize, onMaximize, onClose }: WindowProps) {
+function Window({ title, iconKey, children, zIndex, maximized, active, onFocus, onMinimize, onMaximize, onClose, initialRect }: WindowProps) {
   const [rect, setRect] = useState<Rect>({ x: 80, y: 60, w: 420, h: 320 });
   const [interaction, setInteraction] = useState<"none" | "drag" | "resize">("none");
   const [exiting, setExiting] = useState<"closing" | "minimizing" | null>(null);
@@ -46,15 +47,21 @@ function Window({ title, iconKey, children, zIndex, maximized, active, onFocus, 
   // Random initial position — clamped for mobile
   useEffect(() => {
     const isMobile = window.innerWidth < 768;
-    const r: Rect = {
-      x: isMobile ? 5 : 40 + Math.random() * 120,
-      y: isMobile ? 30 : 30 + Math.random() * 80,
-      w: isMobile ? Math.min(window.innerWidth - 10, 420) : 420,
-      h: isMobile ? Math.min(window.innerHeight - 120, 320) : 320,
-    };
+    const defaultX = isMobile ? 5 : 40 + Math.random() * 120;
+    const defaultY = isMobile ? 30 : 30 + Math.random() * 80;
+    const defaultW = isMobile ? Math.min(window.innerWidth - 10, 420) : 420;
+    const defaultH = isMobile ? Math.min(window.innerHeight - 120, 320) : 320;
+    const r: Rect = initialRect
+      ? {
+          x: isMobile ? 5 : initialRect.x ?? defaultX,
+          y: isMobile ? 30 : initialRect.y ?? defaultY,
+          w: isMobile ? Math.min(window.innerWidth - 10, initialRect.w) : initialRect.w,
+          h: isMobile ? Math.min(window.innerHeight - 120, initialRect.h) : initialRect.h,
+        }
+      : { x: defaultX, y: defaultY, w: defaultW, h: defaultH };
     setRect(r);
     rectSnapshot.current = r;
-  }, []);
+  }, [initialRect]);
 
   // Keep the title bar reachable: clamp so it never leaves the viewport
   const clampPos = useCallback((x: number, y: number, w: number): { x: number; y: number } => {
@@ -118,18 +125,18 @@ function Window({ title, iconKey, children, zIndex, maximized, active, onFocus, 
 
   // ── Global move listeners ──
   useEffect(() => {
-    const onMouseMove = (e: globalThis.MouseEvent) => {
+    const handleMove = (clientX: number, clientY: number) => {
       if (interaction === "drag") {
         const snap = rectSnapshot.current;
         const pos = clampPos(
-          snap.x + (e.clientX - interactionStart.current.x),
-          snap.y + (e.clientY - interactionStart.current.y),
+          snap.x + (clientX - interactionStart.current.x),
+          snap.y + (clientY - interactionStart.current.y),
           snap.w,
         );
         setRect(prev => ({ ...prev, x: pos.x, y: pos.y }));
       } else if (interaction === "resize") {
-        const dx = e.clientX - interactionStart.current.x;
-        const dy = e.clientY - interactionStart.current.y;
+        const dx = clientX - interactionStart.current.x;
+        const dy = clientY - interactionStart.current.y;
         const snap = rectSnapshot.current;
         const dir = resizeDir.current;
         let nx = snap.x, ny = snap.y, nw = snap.w, nh = snap.h;
@@ -142,10 +149,11 @@ function Window({ title, iconKey, children, zIndex, maximized, active, onFocus, 
         setRect({ x: nx, y: ny, w: nw, h: nh });
       }
     };
+    const onMouseMove = (e: globalThis.MouseEvent) => handleMove(e.clientX, e.clientY);
     const onTouchMove = (e: globalThis.TouchEvent) => {
       if (interaction === "drag" || interaction === "resize") {
         e.preventDefault();
-        onMouseMove({ clientX: e.touches[0].clientX, clientY: e.touches[0].clientY } as any);
+        handleMove(e.touches[0].clientX, e.touches[0].clientY);
       }
     };
     const onUp = () => setInteraction("none");

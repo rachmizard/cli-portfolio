@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef, type ReactNode, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from "react";
 import Window from "./Window";
-import { WELCOME_CONTENT, PROJECTS_CONTENT, ABOUT_CONTENT, WINAMP_CONTENT, COMPUTER_CONTENT, RECYCLE_CONTENT, MINESWEEPER_CONTENT } from "../content";
-import { IconTerminal, IconPDF, IconWinamp, IconRecycleBin, IconMyComputerIco, IconFolderIco, IconTxtIco, IconMinesweeper } from "./Icons";
+import { WELCOME_CONTENT, PROJECTS_CONTENT, ABOUT_CONTENT, WINAMP_CONTENT, COMPUTER_CONTENT, RECYCLE_CONTENT, MINESWEEPER_CONTENT, WORD_CONTENT } from "../content";
+import { IconTerminal, IconWinamp, IconRecycleBin, IconMyComputerIco, IconFolderIco, IconTxtIco, IconMinesweeper, IconWord } from "./Icons";
 import type { AppWindow } from "../types";
 
 interface DesktopIcon {
@@ -16,7 +16,7 @@ interface DesktopProps {
   windows: AppWindow[];
   activeId: string;
   wallpaperCss: string;
-  onOpenWindow: (id: string, title: string, icon: string, content: ReactNode) => void;
+  onOpenWindow: (id: string, title: string, icon: string, content: ReactNode, initialRect?: AppWindow["initialRect"]) => void;
   onFocusWindow: (id: string) => void;
   onCloseWindow: (id: string) => void;
   onToggleMinimize: (id: string) => void;
@@ -54,7 +54,7 @@ const DESKTOP_ICONS: DesktopIcon[] = [
   { id: "about", title: "About Me.txt", Icon: IconTxtIco, content: ABOUT_CONTENT, windowTitle: "About Me.txt - Notepad" },
   { id: "projects", title: "Projects", Icon: IconFolderIco, content: PROJECTS_CONTENT, windowTitle: "Projects - File Explorer" },
   { id: "skills", title: "Skills.exe", Icon: IconTerminal, content: WELCOME_CONTENT, windowTitle: "Skills.exe - Command Prompt" },
-  { id: "cv", title: "CV.pdf", Icon: IconPDF, content: null, windowTitle: "" },
+  { id: "cv", title: "CV.doc", Icon: IconWord, content: WORD_CONTENT, windowTitle: "CV.doc - Microsoft Word" },
   { id: "winamp", title: "Winamp", Icon: IconWinamp, content: null, windowTitle: "Winamp 2.91" },
   { id: "minesweeper", title: "Minesweeper", Icon: IconMinesweeper, content: MINESWEEPER_CONTENT, windowTitle: "Minesweeper" },
   { id: "recycle", title: "Recycle Bin", Icon: IconRecycleBin, content: RECYCLE_CONTENT, windowTitle: "Recycle Bin" },
@@ -83,10 +83,10 @@ function Desktop({
   const lastPointerType = useRef<string>("mouse");
 
   const openIcon = useCallback((icon: DesktopIcon) => {
-    if (icon.id === "cv") {
-      window.open("/cv.pdf", "_blank");
-    } else if (icon.id === "winamp") {
+    if (icon.id === "winamp") {
       onOpenWindow(icon.id, icon.windowTitle, icon.id, WINAMP_CONTENT);
+    } else if (icon.id === "cv") {
+      onOpenWindow(icon.id, icon.windowTitle, "word", icon.content!, { w: 660, h: 560 });
     } else {
       onOpenWindow(icon.id, icon.windowTitle, icon.id, icon.content!);
     }
@@ -206,6 +206,7 @@ function Desktop({
             onMinimize={() => onToggleMinimize(w.id)}
             onMaximize={() => onMaximizeWindow(w.id)}
             onClose={() => onCloseWindow(w.id)}
+            initialRect={w.initialRect}
           >
             {w.content}
           </Window>

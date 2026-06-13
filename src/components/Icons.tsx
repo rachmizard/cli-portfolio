@@ -146,6 +146,15 @@ export const IconPDF = ({ size = 32 }: IconProps) => (
   </svg>
 );
 
+export const IconWord = ({ size = 32 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
+    <path d="M6 2H20L26 8V29C26 30.1 25.1 31 24 31H6C4.9 31 4 30.1 4 29V4C4 2.9 4.9 2 6 2Z" fill="#FFFFFF" stroke="#808080" strokeWidth="1" />
+    <path d="M20 2V8H26" fill="#E0E0FF" stroke="#808080" strokeWidth="1" />
+    <rect x="8" y="13" width="16" height="7" rx="1" fill="#2b579a" />
+    <text x="16" y="19" textAnchor="middle" fill="white" fontSize="7" fontWeight="bold" fontFamily="Arial">W</text>
+  </svg>
+);
+
 export const IconTerminal = ({ size = 32 }: IconProps) => (
   <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
     <rect x="2" y="2" width="28" height="24" rx="2" fill="#1E1E1E" stroke="#808080" strokeWidth="1" />
@@ -363,6 +372,7 @@ export const APP_ICONS: Record<string, (p: IconProps) => JSX.Element> = {
   skills: IconTerminal,
   winamp: IconWinamp,
   minesweeper: IconMinesweeper,
+  word: IconWord,
   computer: IconMyComputerIco,
   recycle: IconRecycleBin,
   settings: IconSettings,

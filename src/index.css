@@ -39,6 +39,7 @@
   --font-headline: "Tahoma", "Segoe UI", sans-serif;
   --font-body: "Tahoma", "Segoe UI", sans-serif;
   --font-mono: "Courier Prime", "Courier New", monospace;
+  --font-doc: "Times New Roman", "Georgia", serif;
 }
 
 /* ── Base ── */
@@ -70,6 +71,11 @@ body {
 .bevel-out-thin {
   border: 1px solid;
   border-color: #ffffff #808080 #808080 #ffffff;
+}
+
+/* ── Raised-bevel: referenced by Window.tsx, composes with rounded-t-lg ── */
+.raised-bevel {
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #808080;
 }
 
 /* ── Global XP scrollbars (Luna gray, beveled thumb + arrow buttons) ──

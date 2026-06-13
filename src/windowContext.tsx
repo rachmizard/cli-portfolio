@@ -1,7 +1,8 @@
 import { createContext, useContext, type ReactNode } from "react";
+import type { AppWindow } from "./types";
 
 export interface WindowManager {
-  openWindow: (id: string, title: string, icon: string, content: ReactNode) => void;
+  openWindow: (id: string, title: string, icon: string, content: ReactNode, initialRect?: AppWindow["initialRect"]) => void;
 }
 
 const WindowManagerContext = createContext<WindowManager | null>(null);

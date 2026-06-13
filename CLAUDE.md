@@ -34,7 +34,7 @@ A Windows-XP-styled portfolio rendered as a fake desktop OS. React 19 + Vite + T
 
 Window bodies are arbitrary `ReactNode`s defined in `content.tsx` (`WELCOME_CONTENT`, `PROJECTS_CONTENT`, `ABOUT_CONTENT`, `WINAMP_CONTENT`) and passed into the window state as `content`. `PROJECTS_CONTENT` is `<FileExplorer />` and `WINAMP_CONTENT` is `<Winamp />` — i.e. richer apps are just content nodes mounted inside a generic window frame.
 
-The desktop icon list (`DESKTOP_ICONS` in `Desktop.tsx`) maps icon → content. Special cases live in the icon's `onDoubleClick`: `cv` opens `/cv.pdf` in a new tab, `winamp` mounts `WINAMP_CONTENT`. Adding a new "app" generally means: write content in `content.tsx`, add an entry to `DESKTOP_ICONS`, add an icon to `Icons.tsx`.
+The desktop icon list (`DESKTOP_ICONS` in `Desktop.tsx`) maps icon → content. Special cases live in the icon's `onDoubleClick`: **CV.doc** (`id:"cv"`) opens `src/components/WordWindow.tsx` — a read-only Microsoft Word 2003 viewer rendering `src/data/cv.ts`. Wired via `openWindow("cv", ..., { w:660, h:560 })` in Desktop.tsx `openIcon`, StartMenu.tsx, and FileExplorer.tsx. `initialRect` seeds a 660×560 portrait window. Document body uses `--font-doc` (Times New Roman). No `/cv.pdf` file exists. `winamp` mounts `WINAMP_CONTENT`. Adding a new "app" generally means: write content in `content.tsx`, add an entry to `DESKTOP_ICONS`, add an icon to `Icons.tsx`.
 
 ### Window.tsx — drag/resize internals
 

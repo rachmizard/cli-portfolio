@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import {
-  IconFolder, IconDocument, IconTerminal, IconPDF, IconMyComputer,
+  IconFolder, IconDocument, IconTerminal, IconPDF, IconMyComputer, IconWord,
   IconNavBack, IconNavForward, IconNavUp, IconSearchGlass, IconFoldersPane,
   IconViewTiles, IconViewIcons, IconViewList, IconViewDetails,
   IconTaskRename, IconTaskMove, IconTaskCopy, IconTaskPublish, IconTaskShare,
@@ -9,6 +9,7 @@ import {
 import { useWindowManager } from "../windowContext";
 import { PROJECTS } from "../projects";
 import ProjectWindow from "./ProjectWindow";
+import { WORD_CONTENT } from "../content";
 
 type IconCmp = (p: { size?: number }) => JSX.Element;
 type EntryKind = "folder" | "file";
@@ -32,45 +33,6 @@ interface FolderDef {
   entries: Entry[];
 }
 
-const FS: Record<string, FolderDef> = {
-  desktop: {
-    id: "desktop", label: "Desktop", parent: null,
-    path: "Desktop",
-    entries: [
-      { name: "My Documents", kind: "folder", desc: "Personal files", modified: "6/12/2026 9:15 AM" },
-      { name: "My Computer", kind: "folder", desc: "System drives", modified: "6/01/2026 8:00 AM" },
-    ],
-  },
-  mydocs: {
-    id: "mydocs", label: "My Documents", parent: "desktop",
-    path: "C:\\Documents and Settings\\rachmizard\\My Documents",
-    entries: [
-      { name: "Projects", kind: "folder", desc: "Code repositories", modified: "6/11/2026 10:42 AM" },
-      { name: "resume.pdf", kind: "file", ext: "pdf", desc: "Latest CV — updated June 2026", size: 248, modified: "6/09/2026 4:30 PM", open: () => window.open("/cv.pdf", "_blank") },
-      { name: "readme.txt", kind: "file", ext: "txt", desc: "Project overview and setup guide", size: 3, modified: "5/28/2026 1:12 PM" },
-    ],
-  },
-  projects: {
-    id: "projects", label: "Projects", parent: "mydocs",
-    path: "C:\\Documents and Settings\\rachmizard\\My Documents\\Projects",
-    entries: [
-      { name: "nexus-ui", kind: "folder", desc: "Component library with retro OS design tokens", modified: "6/10/2026 3:21 PM" },
-      { name: "cli-portfolio", kind: "folder", desc: "This portfolio — Windows XP simulation on the web", modified: "6/11/2026 10:42 AM" },
-      { name: "api-gateway", kind: "folder", desc: "GraphQL gateway aggregating 5 microservices", modified: "5/30/2026 11:08 AM" },
-      { name: "fintrack", kind: "folder", desc: "Personal finance tracker with Telegram bot", modified: "4/22/2026 6:55 PM", projectId: "fintrack" },
-      { name: "maha-hr-v2", kind: "folder", desc: "HR attendance app with selfie verification", modified: "6/02/2026 9:40 AM" },
-    ],
-  },
-  mycomputer: {
-    id: "mycomputer", label: "My Computer", parent: "desktop",
-    path: "My Computer",
-    entries: [
-      { name: "Local Disk (C:)", kind: "folder", desc: "Local Disk", modified: "6/01/2026 8:00 AM" },
-      { name: "DVD Drive (D:)", kind: "folder", desc: "CD Drive", modified: "6/01/2026 8:00 AM" },
-    ],
-  },
-};
-
 const FOLDER_BY_NAME: Record<string, string> = {
   "My Documents": "mydocs",
   "My Computer": "mycomputer",
@@ -90,6 +52,7 @@ function entryIcon(e: Entry): IconCmp {
   if (e.kind === "folder") return e.name === "My Computer" ? IconMyComputer : IconFolder;
   if (e.ext === "pdf") return IconPDF;
   if (e.ext === "txt") return IconDocument;
+  if (e.ext === "doc") return IconWord;
   return IconTerminal;
 }
 
@@ -100,6 +63,46 @@ function entryType(e: Entry): string {
 
 function FileExplorer() {
   const { openWindow } = useWindowManager();
+
+  const FS: Record<string, FolderDef> = {
+    desktop: {
+      id: "desktop", label: "Desktop", parent: null,
+      path: "Desktop",
+      entries: [
+        { name: "My Documents", kind: "folder", desc: "Personal files", modified: "6/12/2026 9:15 AM" },
+        { name: "My Computer", kind: "folder", desc: "System drives", modified: "6/01/2026 8:00 AM" },
+      ],
+    },
+    mydocs: {
+      id: "mydocs", label: "My Documents", parent: "desktop",
+      path: "C:\\Documents and Settings\\rachmizard\\My Documents",
+      entries: [
+        { name: "Projects", kind: "folder", desc: "Code repositories", modified: "6/11/2026 10:42 AM" },
+        { name: "CV.doc", kind: "file", ext: "doc", desc: "Curriculum Vitae — Microsoft Word document", size: 248, modified: "6/13/2026 6:30 PM", open: () => openWindow("cv", "CV.doc - Microsoft Word", "word", WORD_CONTENT, { w: 660, h: 560 }) },
+        { name: "readme.txt", kind: "file", ext: "txt", desc: "Project overview and setup guide", size: 3, modified: "5/28/2026 1:12 PM" },
+      ],
+    },
+    projects: {
+      id: "projects", label: "Projects", parent: "mydocs",
+      path: "C:\\Documents and Settings\\rachmizard\\My Documents\\Projects",
+      entries: [
+        { name: "nexus-ui", kind: "folder", desc: "Component library with retro OS design tokens", modified: "6/10/2026 3:21 PM" },
+        { name: "cli-portfolio", kind: "folder", desc: "This portfolio — Windows XP simulation on the web", modified: "6/11/2026 10:42 AM" },
+        { name: "api-gateway", kind: "folder", desc: "GraphQL gateway aggregating 5 microservices", modified: "5/30/2026 11:08 AM" },
+        { name: "fintrack", kind: "folder", desc: "Personal finance tracker with Telegram bot", modified: "4/22/2026 6:55 PM", projectId: "fintrack" },
+        { name: "maha-hr-v2", kind: "folder", desc: "HR attendance app with selfie verification", modified: "6/02/2026 9:40 AM" },
+      ],
+    },
+    mycomputer: {
+      id: "mycomputer", label: "My Computer", parent: "desktop",
+      path: "My Computer",
+      entries: [
+        { name: "Local Disk (C:)", kind: "folder", desc: "Local Disk", modified: "6/01/2026 8:00 AM" },
+        { name: "DVD Drive (D:)", kind: "folder", desc: "CD Drive", modified: "6/01/2026 8:00 AM" },
+      ],
+    },
+  };
+
   const [history, setHistory] = useState<string[]>(["projects"]);
   const [cursor, setCursor] = useState(0);
   const [viewMode, setViewMode] = useState<ViewMode>("tiles");

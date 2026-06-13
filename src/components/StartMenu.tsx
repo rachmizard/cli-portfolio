@@ -1,11 +1,12 @@
-import { IconTerminal, IconFolder, IconDocument, IconInfo, IconWinamp, IconPDF, IconMyComputer, IconUser, IconLogOff, IconTurnOff } from "./Icons";
-import { WELCOME_CONTENT, PROJECTS_CONTENT, ABOUT_CONTENT, WINAMP_CONTENT, COMPUTER_CONTENT } from "../content";
+import { IconTerminal, IconFolder, IconInfo, IconWinamp, IconMyComputer, IconUser, IconLogOff, IconTurnOff, IconWord } from "./Icons";
+import { WELCOME_CONTENT, PROJECTS_CONTENT, ABOUT_CONTENT, WINAMP_CONTENT, COMPUTER_CONTENT, WORD_CONTENT } from "../content";
 import { playSound } from "../lib/sound";
+import type { AppWindow } from "../types";
 
 interface StartMenuProps {
   visible: boolean;
   onClose: () => void;
-  onOpenWindow: (id: string, title: string, icon: string, content: React.ReactNode) => void;
+  onOpenWindow: (id: string, title: string, icon: string, content: React.ReactNode, initialRect?: AppWindow["initialRect"]) => void;
   onTurnOff: () => void;
 }
 
@@ -16,6 +17,7 @@ interface ProgramItem {
   iconKey: string;
   title: string;
   content: React.ReactNode | null;
+  initialRect?: AppWindow["initialRect"];
   href?: string;
 }
 
@@ -24,7 +26,7 @@ const PROGRAMS: ProgramItem[] = [
   { id: "skills", label: "Skills", Icon: IconTerminal, iconKey: "skills", title: "Skills.exe - Command Prompt", content: WELCOME_CONTENT },
   { id: "about", label: "About Me", Icon: IconInfo, iconKey: "about", title: "About Me.txt - Notepad", content: ABOUT_CONTENT },
   { id: "winamp", label: "Winamp", Icon: IconWinamp, iconKey: "winamp", title: "Winamp 2.91", content: WINAMP_CONTENT },
-  { id: "cv", label: "CV.pdf", Icon: IconPDF, iconKey: "document", title: "", content: null, href: "/cv.pdf" },
+  { id: "cv", label: "CV.doc", Icon: IconWord, iconKey: "word", title: "CV.doc - Microsoft Word", content: WORD_CONTENT, initialRect: { w: 660, h: 560 } },
 ];
 
 // Right column — "My Places" style shortcuts
@@ -40,7 +42,7 @@ function StartMenu({ visible, onClose, onOpenWindow, onTurnOff }: StartMenuProps
     if (item.href) {
       window.open(item.href, "_blank");
     } else {
-      onOpenWindow(item.id, item.title || item.label, item.iconKey, item.content);
+      onOpenWindow(item.id, item.title || item.label, item.iconKey, item.content, item.initialRect);
     }
     onClose();
   };
