@@ -60,14 +60,14 @@ export default function ProjectWindow({ project }: ProjectWindowProps) {
       </div>
 
       {/* ── Tab Strip (XP property-sheet style) ── */}
-      <div className="flex shrink-0 bg-surface-container-high pt-1 px-2 border-b border-outline-variant">
+      <div className="flex gap-1 shrink-0 bg-surface-container-high pt-1.5 px-3 border-b border-outline-variant">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.key;
           return (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`px-3 py-1 text-[11px] font-body cursor-pointer ${
+              className={`px-5 py-1.5 text-[11px] font-body cursor-pointer ${
                 isActive
                   ? "bg-white text-on-surface font-bold -mb-px"
                   : "text-on-surface-variant bevel-out-thin bg-surface-container-low hover:bg-surface-container"
@@ -90,7 +90,7 @@ export default function ProjectWindow({ project }: ProjectWindowProps) {
       </div>
 
       {/* ── Tab Content Panel (scrollable) ── */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+      <div className="flex-1 overflow-y-auto p-5 space-y-3">
         {activeTab === "summary" && (
           <>
             {/* Screenshot / Preview */}
