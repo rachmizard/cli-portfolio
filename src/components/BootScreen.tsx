@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { IconXPFlag } from "./Icons";
-import { playSound } from "../lib/sound";
 
 interface BootScreenProps {
   onComplete: () => void;
@@ -9,13 +8,8 @@ interface BootScreenProps {
 /** XP boot screen — black bg, logo, animated progress blocks */
 function BootScreen({ onComplete }: BootScreenProps) {
   useEffect(() => {
-    const audio = playSound("/xp-startup.mp3");
-
     const t = setTimeout(onComplete, 4200);
-    return () => {
-      clearTimeout(t);
-      audio.pause();
-    };
+    return () => clearTimeout(t);
   }, [onComplete]);
 
   return (
