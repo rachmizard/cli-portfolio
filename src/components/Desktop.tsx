@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useRef, type ReactNode, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from "react";
 import Window from "./Window";
-import { WELCOME_CONTENT, PROJECTS_CONTENT, ABOUT_CONTENT, WINAMP_CONTENT, COMPUTER_CONTENT, RECYCLE_CONTENT, MINESWEEPER_CONTENT, WORD_CONTENT } from "../content";
-import { IconTerminal, IconWinamp, IconRecycleBin, IconMyComputerIco, IconFolderIco, IconTxtIco, IconMinesweeper, IconWord } from "./Icons";
+import { WELCOME_CONTENT, PROJECTS_CONTENT, ABOUT_CONTENT, WINAMP_CONTENT, COMPUTER_CONTENT, RECYCLE_CONTENT, MINESWEEPER_CONTENT, WORD_CONTENT, IE_CONTENT } from "../content";
+import { IconTerminal, IconWinamp, IconRecycleBin, IconMyComputerIco, IconFolderIco, IconTxtIco, IconMinesweeperIco, IconWord, IconIE } from "./Icons";
+import { playClick } from "../lib/sound";
 import type { AppWindow } from "../types";
 
 interface DesktopIcon {
@@ -51,12 +52,13 @@ function defaultLayout(): Record<string, IconPos> {
 
 const DESKTOP_ICONS: DesktopIcon[] = [
   { id: "computer", title: "My Computer", Icon: IconMyComputerIco, content: COMPUTER_CONTENT, windowTitle: "My Computer" },
+  { id: "ie", title: "Internet Explorer", Icon: IconIE, content: IE_CONTENT, windowTitle: "Rachmizard's Homepage - Microsoft Internet Explorer" },
   { id: "about", title: "About Me.txt", Icon: IconTxtIco, content: ABOUT_CONTENT, windowTitle: "About Me.txt - Notepad" },
   { id: "projects", title: "Projects", Icon: IconFolderIco, content: PROJECTS_CONTENT, windowTitle: "Projects - File Explorer" },
   { id: "skills", title: "Skills.exe", Icon: IconTerminal, content: WELCOME_CONTENT, windowTitle: "Skills.exe - Command Prompt" },
   { id: "cv", title: "CV.doc", Icon: IconWord, content: WORD_CONTENT, windowTitle: "CV.doc - Microsoft Word" },
   { id: "winamp", title: "Winamp", Icon: IconWinamp, content: null, windowTitle: "Winamp 2.91" },
-  { id: "minesweeper", title: "Minesweeper", Icon: IconMinesweeper, content: MINESWEEPER_CONTENT, windowTitle: "Minesweeper" },
+  { id: "minesweeper", title: "Minesweeper", Icon: IconMinesweeperIco, content: MINESWEEPER_CONTENT, windowTitle: "Minesweeper" },
   { id: "recycle", title: "Recycle Bin", Icon: IconRecycleBin, content: RECYCLE_CONTENT, windowTitle: "Recycle Bin" },
 ];
 
@@ -71,9 +73,10 @@ function Desktop({
   onMaximizeWindow,
   onOpenDisplayProperties,
 }: DesktopProps) {
-  const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
+  const [selectedIcons, setSelectedIcons] = useState<Set<string>>(new Set());
   const [contextMenu, setContextMenu] = useState<ContextMenu>({ x: 0, y: 0, visible: false });
   const [positions, setPositions] = useState<Record<string, IconPos>>(defaultLayout);
+  const [marquee, setMarquee] = useState<{ x0: number; y0: number; x1: number; y1: number } | null>(null);
 
   // Active drag bookkeeping (refs avoid stale closures inside global listeners)
   const dragId = useRef<string | null>(null);
@@ -81,16 +84,76 @@ function Desktop({
   const posSnapshot = useRef<IconPos>({ x: 0, y: 0 });
   const moved = useRef(false);
   const lastPointerType = useRef<string>("mouse");
+  const rootRef = useRef<HTMLDivElement>(null);
+  const marqueeActive = useRef(false);
+  const marqueeMoved = useRef(false);
+  const positionsRef = useRef(positions);
+
+  useEffect(() => { positionsRef.current = positions; }, [positions]);
 
   const openIcon = useCallback((icon: DesktopIcon) => {
+    playClick();
     if (icon.id === "winamp") {
       onOpenWindow(icon.id, icon.windowTitle, icon.id, WINAMP_CONTENT);
     } else if (icon.id === "cv") {
       onOpenWindow(icon.id, icon.windowTitle, "word", icon.content!, { w: 660, h: 560 });
+    } else if (icon.id === "ie") {
+      onOpenWindow(icon.id, icon.windowTitle, icon.id, icon.content!, { w: 720, h: 540 });
     } else {
       onOpenWindow(icon.id, icon.windowTitle, icon.id, icon.content!);
     }
   }, [onOpenWindow]);
+
+  // ── Marquee (rubber-band) selection over the empty desktop ──
+  const startMarquee = useCallback((clientX: number, clientY: number) => {
+    const box = rootRef.current?.getBoundingClientRect();
+    const x = clientX - (box?.left ?? 0);
+    const y = clientY - (box?.top ?? 0);
+    marqueeActive.current = true;
+    marqueeMoved.current = false;
+    setMarquee({ x0: x, y0: y, x1: x, y1: y });
+  }, []);
+
+  useEffect(() => {
+    const onMove = (e: globalThis.PointerEvent) => {
+      if (!marqueeActive.current) return;
+      const box = rootRef.current?.getBoundingClientRect();
+      const x = e.clientX - (box?.left ?? 0);
+      const y = e.clientY - (box?.top ?? 0);
+      setMarquee((prev) => {
+        if (!prev) return prev;
+        const next = { ...prev, x1: x, y1: y };
+        if (Math.abs(next.x1 - next.x0) + Math.abs(next.y1 - next.y0) > 4) marqueeMoved.current = true;
+        // Select every icon intersecting the rubber band
+        const left = Math.min(next.x0, next.x1);
+        const top = Math.min(next.y0, next.y1);
+        const right = Math.max(next.x0, next.x1);
+        const bottom = Math.max(next.y0, next.y1);
+        const hit = new Set<string>();
+        for (const icon of DESKTOP_ICONS) {
+          const p = positionsRef.current[icon.id];
+          if (p && p.x < right && p.x + ICON_W > left && p.y < bottom && p.y + ICON_H > top) {
+            hit.add(icon.id);
+          }
+        }
+        setSelectedIcons(hit);
+        return next;
+      });
+    };
+    const onUp = () => {
+      if (!marqueeActive.current) return;
+      marqueeActive.current = false;
+      setMarquee(null);
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+    };
+  }, []);
 
   const startIconDrag = useCallback((id: string, clientX: number, clientY: number) => {
     dragId.current = id;
@@ -109,7 +172,7 @@ function Desktop({
       moved.current = true;
       const snap = posSnapshot.current;
       const maxX = window.innerWidth - ICON_W;
-      const maxY = window.innerHeight - ICON_H - 28; // leave room for taskbar
+      const maxY = window.innerHeight - ICON_H - 30; // leave room for taskbar
       const nx = Math.min(Math.max(snap.x + dx, 0), maxX);
       const ny = Math.min(Math.max(snap.y + dy, 0), maxY);
       setPositions((prev) => ({ ...prev, [id]: { x: nx, y: ny } }));
@@ -143,20 +206,35 @@ function Desktop({
   }, [contextMenu.visible, hideContextMenu]);
 
   const handleDesktopClick = () => {
-    setSelectedIcon(null);
+    if (marqueeMoved.current) {
+      // A rubber-band drag just ended; keep its selection
+      marqueeMoved.current = false;
+      hideContextMenu();
+      return;
+    }
+    setSelectedIcons(new Set());
     onFocusWindow("");
     hideContextMenu();
   };
 
   return (
     <div
+      ref={rootRef}
       className="flex-1 relative desktop select-none"
       style={{ background: wallpaperCss }}
       onContextMenu={handleContextMenu}
       onClick={handleDesktopClick}
     >
       {/* Desktop Icons */}
-      <div className="absolute inset-0 z-0">
+      <div
+        className="absolute inset-0 z-0"
+        onPointerDown={(e: ReactPointerEvent) => {
+          // Only empty desktop starts a rubber band (icons stopPropagation)
+          if (e.target === e.currentTarget && e.button === 0) {
+            startMarquee(e.clientX, e.clientY);
+          }
+        }}
+      >
         {DESKTOP_ICONS.map((icon) => {
           const pos = positions[icon.id];
           return (
@@ -166,7 +244,7 @@ function Desktop({
               onPointerDown={(e: ReactPointerEvent) => {
                 e.stopPropagation();
                 lastPointerType.current = e.pointerType;
-                setSelectedIcon(icon.id);
+                setSelectedIcons(new Set([icon.id]));
                 startIconDrag(icon.id, e.clientX, e.clientY);
               }}
               onClick={(e) => {
@@ -179,7 +257,7 @@ function Desktop({
                 e.stopPropagation();
                 openIcon(icon);
               }}
-              className={`desktop-icon ${selectedIcon === icon.id ? "selected" : ""}`}
+              className={`desktop-icon ${selectedIcons.has(icon.id) ? "selected" : ""}`}
             >
               <div className="w-10 h-10 flex items-center justify-center pointer-events-none">
                 <icon.Icon size={32} />
@@ -188,6 +266,19 @@ function Desktop({
             </button>
           );
         })}
+
+        {/* Rubber-band rectangle */}
+        {marquee && (
+          <div
+            className="marquee"
+            style={{
+              left: Math.min(marquee.x0, marquee.x1),
+              top: Math.min(marquee.y0, marquee.y1),
+              width: Math.abs(marquee.x1 - marquee.x0),
+              height: Math.abs(marquee.y1 - marquee.y0),
+            }}
+          />
+        )}
       </div>
 
       {/* Windows */}

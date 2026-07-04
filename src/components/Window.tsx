@@ -27,7 +27,10 @@ type ResizeDir = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
 
 const MIN_W = 220;
 const MIN_H = 140;
-const TASKBAR_H = 28;
+const TASKBAR_H = 30;
+
+// XP cascades new windows instead of placing them randomly
+let cascadeStep = 0;
 
 const REDUCED_MOTION =
   typeof window !== "undefined" &&
@@ -44,11 +47,12 @@ function Window({ title, iconKey, children, zIndex, maximized, active, onFocus, 
 
   useEffect(() => { rectRef.current = rect; }, [rect]);
 
-  // Random initial position — clamped for mobile
+  // Cascading initial position (like real XP) — clamped for mobile
   useEffect(() => {
     const isMobile = window.innerWidth < 768;
-    const defaultX = isMobile ? 5 : 40 + Math.random() * 120;
-    const defaultY = isMobile ? 30 : 30 + Math.random() * 80;
+    const step = cascadeStep++ % 8;
+    const defaultX = isMobile ? 5 : 48 + step * 26;
+    const defaultY = isMobile ? 30 : 32 + step * 26;
     const defaultW = isMobile ? Math.min(window.innerWidth - 10, 420) : 420;
     const defaultH = isMobile ? Math.min(window.innerHeight - 120, 320) : 320;
     const r: Rect = initialRect
@@ -172,7 +176,7 @@ function Window({ title, iconKey, children, zIndex, maximized, active, onFocus, 
 
   // ── Styles ──
   const winStyle = maximized
-    ? { left: 0, top: 0, width: "100%", height: "calc(100% - 28px)", zIndex }
+    ? { left: 0, top: 0, width: "100%", height: "calc(100% - var(--taskbar-h))", zIndex }
     : { left: rect.x, top: rect.y, width: rect.w, height: rect.h, zIndex };
 
   // Cursor for resize handles
@@ -187,7 +191,7 @@ function Window({ title, iconKey, children, zIndex, maximized, active, onFocus, 
 
   return (
     <div
-      className={`absolute window flex flex-col ${active ? "window-active" : "window-inactive"} ${maximized ? "" : "raised-bevel rounded-t-lg"} ${exitClass}`}
+      className={`absolute window flex flex-col ${active ? "window-active" : "window-inactive"} ${maximized ? "window-maximized" : ""} ${exitClass}`}
       style={winStyle as React.CSSProperties}
       onMouseDown={onFocus}
       onTouchStart={onFocus}
@@ -213,7 +217,7 @@ function Window({ title, iconKey, children, zIndex, maximized, active, onFocus, 
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-hidden bg-surface-container-lowest">{children}</div>
+      <div className="window-body flex-1 overflow-hidden bg-surface-container-lowest">{children}</div>
 
       {/* Resize handles — desktop only, not when maximized */}
       {!maximized && (

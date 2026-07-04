@@ -3,6 +3,7 @@ import Desktop from "./components/Desktop";
 import Taskbar from "./components/Taskbar";
 import StartMenu from "./components/StartMenu";
 import DisplayProperties from "./components/DisplayProperties";
+import RunDialog from "./components/RunDialog";
 import ShutdownScreen from "./components/ShutdownScreen";
 import BootScreen from "./components/BootScreen";
 import WelcomeScreen from "./components/WelcomeScreen";
@@ -22,6 +23,7 @@ function App() {
   const [booting, setBooting] = useState(true);
   const [welcoming, setWelcoming] = useState(false);
   const [smadav, setSmadav] = useState(false);
+  const [runOpen, setRunOpen] = useState(false);
   const { wallpaper, setWallpaper } = useWallpaper();
 
   useEffect(() => {
@@ -118,7 +120,7 @@ function App() {
 
   return (
     <div className="h-full flex flex-col">
-      <WindowManagerProvider value={{ openWindow }}>
+      <WindowManagerProvider value={{ openWindow, openDisplayProperties }}>
       {booting && <BootScreen onComplete={() => { setBooting(false); setWelcoming(true); }} />}
       {welcoming && <WelcomeScreen onComplete={() => { setWelcoming(false); setSmadav(true); }} />}
       {smadav && <SmadavScreen onComplete={() => setSmadav(false)} />}
@@ -146,11 +148,13 @@ function App() {
         visible={startMenuOpen}
         onClose={() => setStartMenuOpen(false)}
         onOpenWindow={openWindow}
+        onOpenRun={() => setRunOpen(true)}
         onTurnOff={() => {
           setStartMenuOpen(false);
           setShuttingDown(true);
         }}
       />
+      {runOpen && <RunDialog onClose={() => setRunOpen(false)} />}
       {shuttingDown && <ShutdownScreen onComplete={() => {}} />}
       </WindowManagerProvider>
     </div>

@@ -43,7 +43,15 @@
 }
 
 /* ── Base ── */
-* { margin: 0; padding: 0; box-sizing: border-box; }
+/* Layered so Tailwind spacing utilities (@layer utilities) can override it;
+   unlayered, this * rule silently kills every p-*/m-* class in the app. */
+@layer base {
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+}
+
+:root {
+  --taskbar-h: 30px;
+}
 
 html, body, #root {
   height: 100%;
@@ -71,11 +79,6 @@ body {
 .bevel-out-thin {
   border: 1px solid;
   border-color: #ffffff #808080 #808080 #ffffff;
-}
-
-/* ── Raised-bevel: referenced by Window.tsx, composes with rounded-t-lg ── */
-.raised-bevel {
-  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #808080;
 }
 
 /* ── Global XP scrollbars (Luna gray, beveled thumb + arrow buttons) ──
@@ -179,6 +182,7 @@ body {
 
 /* ── Taskbar (XP Blue) ── */
 .taskbar {
+  height: var(--taskbar-h);
   background: linear-gradient(
     180deg,
     #5b8ef5 0%,
@@ -261,6 +265,16 @@ body {
   background: rgba(255,255,255,0.2);
   outline: 1px solid rgba(255,255,255,0.4);
 }
+/* Quick Launch grip — vertical dotted handle */
+.ql-handle {
+  width: 3px;
+  height: 18px;
+  margin-right: 2px;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.75) 35%, transparent 40%);
+  background-size: 3px 3px;
+  background-repeat: repeat-y;
+  cursor: default;
+}
 
 /* ── System Tray ── */
 .tray {
@@ -308,16 +322,38 @@ body {
   transition-delay: 500ms;
 }
 
-/* ── Window ── */
+/* ── Window — Luna blue frame (title bar gradient + 3px blue edges) ── */
 .window {
-  background: var(--color-surface-container-high);
   border-radius: 8px 8px 0 0;
 }
 .window-active {
-  box-shadow: 4px 4px 12px rgba(0,0,0,0.5);
+  background: #1259df;
+  box-shadow:
+    inset -1px -1px #002ea0,
+    inset 1px 1px #3a83f2,
+    4px 4px 12px rgba(0,0,0,0.5);
 }
 .window-inactive {
-  box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+  background: #8aa7e0;
+  box-shadow:
+    inset -1px -1px #5c7bc0,
+    inset 1px 1px #b8cbee,
+    2px 2px 6px rgba(0,0,0,0.3);
+}
+/* Client area sits inside the frame; 3px of blue shows on left/right/bottom */
+.window-body {
+  margin: 0 3px 3px;
+}
+.window-maximized {
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+.window-maximized .window-body {
+  margin: 0;
+}
+.window-maximized .title-bar {
+  border-radius: 0;
 }
 
 /* ── Window open/close/minimize transitions ── */
@@ -352,33 +388,37 @@ body {
   }
 }
 
+/* Authentic Luna gradient: bright streak at the very top, saturated blue body */
 .title-bar {
   background: linear-gradient(
     180deg,
-    #0054e3 0%,
-    #3c6df0 10%,
-    #6b9fff 40%,
-    #3c6df0 80%,
-    #1a4cc7 100%
+    #0997ff 0%,
+    #0053ee 8%,
+    #0050ee 40%,
+    #0066ff 88%,
+    #094ab2 93%,
+    #094ab2 100%
   );
   color: var(--color-on-primary);
-  font-family: var(--font-body);
+  font-family: "Trebuchet MS", var(--font-body);
   font-weight: 700;
   font-size: 13px;
-  padding: 4px 6px;
-  border-radius: 7px 7px 0 0;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+  padding: 3px 5px 3px 6px;
+  min-height: 28px;
+  border-radius: 8px 8px 0 0;
+  text-shadow: 1px 1px #0f1089;
 }
 /* Inactive window title bar — desaturated XP blue */
 .title-bar.inactive {
   background: linear-gradient(
     180deg,
-    #7a9fd6 0%,
-    #91b0e0 10%,
-    #b3cbf0 40%,
-    #91b0e0 80%,
-    #6e93cc 100%
+    #7697e7 0%,
+    #94afe8 8%,
+    #8bb0e7 40%,
+    #82a5e4 88%,
+    #6a8cd0 100%
   );
+  color: #d8e4f8;
   text-shadow: none;
 }
 .title-bar.inactive .title-bar-buttons:not(.title-bar-close) {
@@ -388,39 +428,37 @@ body {
   filter: saturate(0.6);
 }
 
+/* Luna glass control buttons — rounded, white-bordered, radial highlight */
 .title-bar-buttons {
   width: 21px;
   height: 21px;
-  background: linear-gradient(
-    180deg,
-    #e87850 0%,
-    #c04030 45%,
-    #c04030 55%,
-    #a03020 100%
-  );
+  background: radial-gradient(circle at 30% 25%, #f1a48c 0%, #dd4f2b 45%, #b32b0a 85%, #a02608 100%);
   color: white;
   font-size: 11px;
   font-weight: 700;
   border-radius: 3px;
-  border: 1px solid #802020;
+  border: 1px solid rgba(255,255,255,0.85);
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,0.55),
+    inset 0 -2px 2px rgba(90,10,0,0.45);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: Tahoma, sans-serif;
 }
 .title-bar-buttons:not(.title-bar-close) {
-  background: linear-gradient(
-    180deg,
-    #5b8ef5 0%,
-    #3168d5 45%,
-    #2156d0 55%,
-    #1a4cc7 100%
-  );
-  border-color: #ffffff #1a4cc7 #1a4cc7 #ffffff;
+  background: radial-gradient(circle at 30% 25%, #98b8f4 0%, #4c7fe8 45%, #1c50c8 85%, #1646b0 100%);
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,0.55),
+    inset 0 -2px 2px rgba(0,25,110,0.5);
   font-size: 11px;
 }
 .title-bar-buttons:hover {
-  filter: brightness(1.2);
+  filter: brightness(1.18);
+}
+.title-bar-buttons:active {
+  filter: brightness(0.85);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.4);
 }
 
 /* ── Start Menu (two-column XP) ── */
@@ -483,6 +521,290 @@ body {
 }
 .start-footer button {
   font-family: var(--font-body);
+}
+.start-item-sub {
+  font-size: 10px;
+  font-weight: 400;
+  color: #7f8a99;
+}
+.start-item:hover .start-item-sub {
+  color: #dbe6fb;
+}
+.start-allprograms-arrow {
+  color: #2a7a2c;
+  font-size: 8px;
+  line-height: 1;
+}
+.start-item:hover .start-allprograms-arrow {
+  color: #fff;
+}
+/* All Programs flyout — pops over the right column, clamped to viewport */
+.start-flyout {
+  position: absolute;
+  left: min(205px, calc(100vw - 216px));
+  bottom: 30px;
+  width: 210px;
+  max-height: 60vh;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #7a98cf;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.35);
+  padding: 2px;
+  z-index: 30;
+}
+
+/* ── XP common controls (buttons, inputs, menu bars) ── */
+.xp-btn {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: #000;
+  padding: 3px 12px;
+  border: 1px solid #003c74;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #ffffff 0%, #ecebe5 86%, #d8d0c4 100%);
+  box-shadow: inset -1px -1px 1px #d8d0c4;
+  cursor: pointer;
+}
+/* Luna orange hover glow */
+.xp-btn:not(:disabled):hover {
+  box-shadow:
+    inset -1px 1px 1px #fff2cf,
+    inset 1px 2px 2px #fdd889,
+    inset -2px -2px 2px #f7b944,
+    inset 2px -2px 2px #f7b944;
+}
+.xp-btn:not(:disabled):active {
+  background: linear-gradient(180deg, #cdcac3 0%, #e3e3db 100%);
+  box-shadow: none;
+}
+/* Blue focus ring (default button look) */
+.xp-btn:focus-visible {
+  outline: none;
+  box-shadow:
+    inset -1px 1px 1px #cee7ff,
+    inset 1px 2px 2px #98b8ea,
+    inset -2px -2px 2px #6f9ddf,
+    inset 2px -2px 2px #6f9ddf;
+}
+.xp-btn:disabled {
+  color: #a0a0a0;
+  border-color: #c9c2b8;
+  background: #f2f1ea;
+  box-shadow: none;
+  cursor: default;
+}
+.xp-input {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: #000;
+  padding: 3px 4px;
+  border: 1px solid #7f9db9;
+  border-radius: 0;
+  background: #fff;
+  outline: none;
+}
+.xp-input:focus {
+  border-color: #316ac5;
+}
+.xp-menubar {
+  display: flex;
+  align-items: center;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-outline-variant);
+  padding: 0 2px;
+}
+.xp-menu-item {
+  font-family: var(--font-body);
+  font-size: 11px;
+  padding: 3px 7px;
+  color: #000;
+  cursor: default;
+}
+.xp-menu-item:hover {
+  background: #316ac5;
+  color: #fff;
+}
+.xp-addressbar {
+  background: #fff;
+  border: 1px solid #7f9db9;
+  padding: 2px 4px;
+  font-size: 11px;
+  min-width: 0;
+}
+/* Explorer tile-group header + gradient rule ("Hard Disk Drives" etc.) */
+.xp-group-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0c327d;
+}
+.xp-group-rule {
+  height: 1px;
+  margin-top: 2px;
+  background: linear-gradient(90deg, #b6c8e8 0%, rgba(182, 200, 232, 0) 100%);
+}
+.notepad-text {
+  font-family: "Lucida Console", "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.35;
+  padding: 4px 6px;
+  color: #000;
+  white-space: pre-wrap;
+}
+
+/* ── Notification balloon (tray, pale yellow) ── */
+.balloon {
+  position: fixed;
+  right: 8px;
+  bottom: calc(var(--taskbar-h) + 16px);
+  width: 300px;
+  max-width: calc(100vw - 16px);
+  background: #ffffe1;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.35);
+  z-index: 9000;
+  animation: balloon-in 200ms ease-out;
+}
+@keyframes balloon-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* Tail pointing down toward the tray */
+.balloon::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  right: 26px;
+  width: 0;
+  height: 0;
+  border-left: 14px solid transparent;
+  border-top: 14px solid #ffffe1;
+  filter: drop-shadow(1px 1px 0 #000);
+}
+.balloon-close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  z-index: 2;
+  cursor: pointer;
+}
+.balloon-close svg {
+  filter: invert(1); /* IconClose strokes white; balloon is pale yellow */
+}
+.balloon-close:hover {
+  border-color: #808080;
+  background: #ffe8b0;
+}
+.balloon-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  padding-right: 18px;
+}
+.balloon-body {
+  margin-top: 6px;
+  line-height: 1.4;
+}
+/* Whole balloon is clickable (under the close button) */
+.balloon-hit {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+/* ── Desktop rubber-band selection ── */
+.marquee {
+  position: absolute;
+  background: rgba(49, 106, 197, 0.25);
+  border: 1px solid #316ac5;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* ── Internet Explorer 6 retro homepage ── */
+.ie-page {
+  background: #fff;
+}
+.ie-banner {
+  background: linear-gradient(180deg, #000f8f 0%, #2b3cc4 55%, #5a6fe0 100%);
+  color: #fff;
+  text-align: center;
+  padding: 18px 12px 14px;
+  border-bottom: 3px solid #f8b042;
+}
+.ie-banner-title {
+  font-family: "Comic Sans MS", "Trebuchet MS", cursive;
+  font-size: 26px;
+  font-weight: 700;
+  text-shadow: 2px 2px 0 #000;
+}
+.ie-banner-sub {
+  font-size: 11px;
+  color: #cfd8ff;
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+.ie-marquee-strip {
+  overflow: hidden;
+  white-space: nowrap;
+  background: #000;
+  color: #00ff00;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 3px 0;
+}
+.ie-marquee-text {
+  display: inline-block;
+  padding-left: 100%;
+  animation: ie-marquee 18s linear infinite;
+}
+@keyframes ie-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ie-marquee-text { animation: none; padding-left: 8px; }
+}
+.ie-links-table td {
+  padding: 6px 4px;
+  border-bottom: 1px dotted #b8b8b8;
+}
+.ie-link {
+  color: #0000ee;
+  text-decoration: underline;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+}
+.ie-link:hover {
+  color: #551a8b;
+}
+.ie-link:active {
+  color: #ee0000;
+}
+.ie-counter {
+  display: inline-block;
+  background: #000;
+  color: #00ff00;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 2px 8px;
+  border: 2px inset #808080;
 }
 
 /* ── XP Welcome screen (blue, post-boot, plays startup chord) ── */
@@ -862,6 +1184,10 @@ body {
 
 /* ── Mobile Responsive ── */
 @media (max-width: 768px) {
+  :root {
+    --taskbar-h: 24px;
+  }
+
   html, body, #root {
     overflow: hidden;
     touch-action: manipulation;
@@ -889,9 +1215,6 @@ body {
     font-size: 9px;
   }
 
-  .taskbar {
-    height: 24px;
-  }
   .btn-start {
     font-size: 11px;
     padding: 0 6px;

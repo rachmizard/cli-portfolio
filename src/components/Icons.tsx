@@ -364,6 +364,86 @@ export const IconTaskDetails = ({ size = 16 }: IconProps) => (
 export const IconMyComputerIco = ({ size = 32 }: IconProps) => <IcoIcon name="My Computer" size={size} />;
 export const IconFolderIco = ({ size = 32 }: IconProps) => <IcoIcon name="Folder Closed" size={size} />;
 export const IconTxtIco = ({ size = 32 }: IconProps) => <IcoIcon name="List File" size={size} />;
+export const IconIE = ({ size = 32 }: IconProps) => <IcoIcon name="Internet Properties" size={size} />;
+export const IconNetworkIco = ({ size = 32 }: IconProps) => <IcoIcon name="My Network Places" size={size} />;
+export const IconMyPicturesIco = ({ size = 32 }: IconProps) => <IcoIcon name="Camera" size={size} />;
+export const IconMyMusicIco = ({ size = 32 }: IconProps) => <IcoIcon name="Music File" size={size} />;
+export const IconControlPanelIco = ({ size = 32 }: IconProps) => <IcoIcon name="System Properties" size={size} />;
+export const IconHelpIco = ({ size = 32 }: IconProps) => <IcoIcon name="User Support" size={size} />;
+export const IconMyDocsIco = ({ size = 32 }: IconProps) => <IcoIcon name="My Profile Folder" size={size} />;
+export const IconUserIco = ({ size = 32 }: IconProps) => <IcoIcon name="User 1" size={size} />;
+export const IconMinesweeperIco = ({ size = 32 }: IconProps) => <IcoIcon name="Minesweeper" size={size} />;
+export const IconDriveIco = ({ size = 32 }: IconProps) => <IcoIcon name="Disk Image File" size={size} />;
+
+/** 3½ floppy drive */
+export const IconFloppy = ({ size = 32 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
+    <rect x="4" y="3" width="24" height="26" rx="1.5" fill="#2b3a8c" stroke="#16205c" strokeWidth="1" />
+    <rect x="10" y="3" width="12" height="9" fill="#c8cdd6" stroke="#808080" strokeWidth="0.8" />
+    <rect x="17" y="4.5" width="3" height="6" fill="#4a5578" />
+    <rect x="8" y="17" width="16" height="10" rx="1" fill="#f5f5f5" stroke="#808080" strokeWidth="0.8" />
+    <path d="M10 20h12M10 23h9" stroke="#a0a0c0" strokeWidth="1" />
+  </svg>
+);
+
+/** CD-ROM disc */
+export const IconCD = ({ size = 32 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
+    <circle cx="16" cy="16" r="13" fill="#d9e4f0" stroke="#8898b0" strokeWidth="1" />
+    <path d="M6 10a13 13 0 0 1 10-7" stroke="#b7e28f" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+    <path d="M26 22a13 13 0 0 1-9 7" stroke="#f0b7d8" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+    <circle cx="16" cy="16" r="4.5" fill="#f5f8fc" stroke="#8898b0" strokeWidth="1" />
+    <circle cx="16" cy="16" r="2" fill="#ffffff" stroke="#a8b4c8" strokeWidth="0.8" />
+  </svg>
+);
+
+/** E-mail envelope (start menu pinned row) */
+export const IconEmail = ({ size = 24 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+    <rect x="1" y="3" width="14" height="10" rx="1" fill="#fff" stroke="#808080" strokeWidth="1" />
+    <path d="M1.5 3.5L8 9l6.5-5.5" stroke="#1a4cc7" strokeWidth="1.2" fill="none" />
+  </svg>
+);
+
+/** Run… dialog icon — window with launch arrow */
+export const IconRun = ({ size = 24 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <rect x="2" y="4" width="16" height="13" rx="1" fill="#ECE9D8" stroke="#808080" strokeWidth="1" />
+    <rect x="2" y="4" width="16" height="3.5" fill="#0054e3" />
+    <path d="M13 12l8 4-3.5 1-1 3.5z" fill="#3c9a3e" stroke="#1b7424" strokeWidth="0.8" />
+  </svg>
+);
+
+/** XP critical-error glyph — red circle, white X */
+export const IconErrorX = ({ size = 32 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 32 32">
+    <circle cx="16" cy="16" r="14" fill="#d63a2f" stroke="#8c1509" strokeWidth="1" />
+    <circle cx="16" cy="16" r="14" fill="url(#errx-shine)" opacity="0.35" />
+    <defs>
+      <linearGradient id="errx-shine" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor="#fff" />
+        <stop offset="60%" stopColor="#fff" stopOpacity="0" />
+      </linearGradient>
+    </defs>
+    <path d="M10 10L22 22M22 10L10 22" stroke="#fff" strokeWidth="3.4" strokeLinecap="round" />
+  </svg>
+);
+
+/** Smadav-green tray shield */
+export const IconShieldTray = ({ size = 15 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 16 16">
+    <path d="M8 1L14 3.5V8C14 11.5 11.5 14 8 15C4.5 14 2 11.5 2 8V3.5Z" fill="#2fae4d" stroke="#1c8a39" strokeWidth="1" />
+    <path d="M5.5 8L7.3 10L10.8 5.8" stroke="#fff" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+/** Tray network — two mini monitors */
+export const IconNetworkTray = ({ size = 15 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 16 16">
+    <rect x="1" y="3" width="8" height="6" rx="0.5" fill="#4a90e8" stroke="#fff" strokeWidth="1" />
+    <rect x="7" y="7" width="8" height="6" rx="0.5" fill="#2f6fd0" stroke="#fff" strokeWidth="1" />
+  </svg>
+);
 
 /** Map app key -> icon component, used by Window title bars and taskbar buttons */
 export const APP_ICONS: Record<string, (p: IconProps) => JSX.Element> = {
@@ -371,7 +451,7 @@ export const APP_ICONS: Record<string, (p: IconProps) => JSX.Element> = {
   projects: IconFolderIco,
   skills: IconTerminal,
   winamp: IconWinamp,
-  minesweeper: IconMinesweeper,
+  minesweeper: IconMinesweeperIco,
   word: IconWord,
   computer: IconMyComputerIco,
   recycle: IconRecycleBin,
@@ -379,6 +459,8 @@ export const APP_ICONS: Record<string, (p: IconProps) => JSX.Element> = {
   terminal: IconTerminal,
   document: IconDocument,
   folder: IconFolderIco,
+  ie: IconIE,
+  run: IconRun,
 };
 
 export const AppIcon = ({ iconKey, size = 16 }: { iconKey: string; size?: number }) => {
